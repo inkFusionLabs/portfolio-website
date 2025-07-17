@@ -1,4 +1,4 @@
-# HarmonyHub - OmniFusion Music
+# OmniFusion Music
 
 A universal music command center that aggregates multiple streaming services into one beautiful desktop application.
 
@@ -24,7 +24,7 @@ A universal music command center that aggregates multiple streaming services int
 1. Clone the repository:
 ```bash
 git clone <your-repo-url>
-cd HarmonyHub
+cd OmniFusion-Music
 ```
 
 2. Install dependencies:
@@ -69,7 +69,7 @@ npm run tauri build
 ## 📁 Project Structure
 
 ```
-HarmonyHub/
+OmniFusion-Music/
 ├── src/
 │   ├── components/     # Reusable UI components
 │   ├── contexts/       # React contexts (MusicContext)
