@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "**/*",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/legal",
+      "dest": "/legal.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "VITE_APP_NAME": "OmniFusion Music",
+    "VITE_APP_VERSION": "1.0.0",
+    "VITE_APP_URL": "https://omnifusionmusic.com",
+    "VITE_GITHUB_URL": "https://github.com/yourusername/OmniFusionMusic",
+    "VITE_DISCORD_URL": "https://discord.gg/omnifusion",
+    "VITE_TWITTER_URL": "https://twitter.com/omnifusionmusic",
+    "VITE_EMAIL": "inkfusionlabs@icloud.com",
+    "VITE_SUPPORT_EMAIL": "inkfusionlabs@icloud.com"
+  },
+  "redirects": [
+    {
+      "source": "/download",
+      "destination": "/#download",
+      "permanent": false
+    },
+    {
+      "source": "/support",
+      "destination": "/#support",
+      "permanent": false
+    },
+    {
+      "source": "/sponsors",
+      "destination": "https://github.com/sponsors/yourusername",
+      "permanent": false
+    }
+  ]
+} 
