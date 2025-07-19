@@ -34,8 +34,8 @@ class SpotifyService {
     // Production credentials
     this.clientId = '0830208961c64908baf8bc1effbc4342'
     this.clientSecret = 'c70789797dde459face1f0b6a3f12bef'
-    // Use production domain for live app
-    this.redirectUri = 'https://www.omnifusionmusic.com/spotify-callback'
+    // Use local development URI for the app
+    this.redirectUri = 'http://localhost:1420/spotify-callback'
   }
 
   async initialize(): Promise<boolean> {
@@ -88,175 +88,11 @@ class SpotifyService {
     
     console.log('Authorization URL:', authUrl.toString())
     
-    // Try multiple methods to open the browser
-    let opened = false
-    
-    try {
-      console.log('Trying Tauri shell...')
-      // Method 1: Try Tauri shell
-      const { open } = await import('@tauri-apps/api/shell')
-      await open(authUrl.toString())
-      console.log('✅ Opened with Tauri shell')
-      opened = true
-    } catch (error) {
-      console.log('❌ Tauri shell failed:', error)
-      console.log('Trying window.open...')
-      
-      // Method 2: Fallback to window.open
-      try {
-        const newWindow = window.open(authUrl.toString(), '_blank')
-        if (newWindow) {
-          console.log('✅ Opened with window.open')
-          opened = true
-        } else {
-          console.log('❌ window.open failed - popup blocked')
-        }
-      } catch (windowError) {
-        console.log('❌ window.open error:', windowError)
-      }
-    }
-    
-    if (!opened) {
-      throw new Error('Failed to open browser. Please allow popups and try again.')
-    }
-    
-    // Show simple instructions to user
-    this.showAuthInstructions()
+    // Open the authorization URL in the current window/tab
+    window.location.href = authUrl.toString()
   }
 
-  private showAuthInstructions(): void {
-    // Create a simple overlay with instructions
-    const overlay = document.createElement('div')
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    `
-    
-    overlay.innerHTML = `
-      <div style="
-        background: #1a1a1a;
-        border-radius: 12px;
-        padding: 30px;
-        max-width: 400px;
-        text-align: center;
-        color: white;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      ">
-        <div style="font-size: 48px; margin-bottom: 20px;">🎵</div>
-        <h2 style="margin: 0 0 20px 0; color: #1db954;">Connect to Spotify</h2>
-        <p style="margin: 0 0 20px 0; line-height: 1.5; color: #ccc;">
-          Spotify authorization opened in your browser.<br><br>
-          <strong>Steps:</strong><br>
-          1. Complete authorization in browser<br>
-          2. Copy the authorization code<br>
-          3. Paste it below and click Connect
-        </p>
-        <div style="margin: 20px 0;">
-          <input 
-            type="text" 
-            id="auth-code-input"
-            placeholder="Paste authorization code here..."
-            style="
-              width: 100%;
-              padding: 12px;
-              border: 2px solid #333;
-              border-radius: 6px;
-              background: #2a2a2a;
-              color: white;
-              font-size: 14px;
-              margin-bottom: 15px;
-            "
-          >
-          <div style="display: flex; gap: 10px;">
-            <button 
-              id="connect-btn"
-              style="
-                flex: 1;
-                padding: 12px;
-                background: #1db954;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                font-size: 14px;
-                font-weight: 600;
-                cursor: pointer;
-              "
-            >
-              Connect
-            </button>
-            <button 
-              id="cancel-btn"
-              style="
-                flex: 1;
-                padding: 12px;
-                background: #333;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                font-size: 14px;
-                cursor: pointer;
-              "
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    `
-    
-    document.body.appendChild(overlay)
-    
-    // Handle connect button
-    const connectBtn = overlay.querySelector('#connect-btn')
-    const cancelBtn = overlay.querySelector('#cancel-btn')
-    const codeInput = overlay.querySelector('#auth-code-input') as HTMLInputElement
-    
-    connectBtn?.addEventListener('click', async () => {
-      const code = codeInput?.value?.trim()
-      if (!code) {
-        alert('Please enter the authorization code')
-        return
-      }
-      
-      connectBtn.textContent = 'Connecting...'
-      connectBtn.setAttribute('disabled', 'true')
-      
-      try {
-        const success = await this.handleManualCode(code)
-        if (success) {
-          document.body.removeChild(overlay)
-          window.dispatchEvent(new CustomEvent('spotifyConnected'))
-        } else {
-          alert('Failed to connect. Please try again.')
-          connectBtn.textContent = 'Connect'
-          connectBtn.removeAttribute('disabled')
-        }
-      } catch (error) {
-        alert(`Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
-        connectBtn.textContent = 'Connect'
-        connectBtn.removeAttribute('disabled')
-      }
-    })
-    
-    // Handle cancel button
-    cancelBtn?.addEventListener('click', () => {
-      document.body.removeChild(overlay)
-    })
-    
-    // Auto-focus the input
-    setTimeout(() => {
-      codeInput?.focus()
-    }, 100)
-  }
+
 
 
 
