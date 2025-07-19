@@ -23,6 +23,7 @@ import InteractiveMusicPlayer from './components/InteractiveMusicPlayer'
 import LiveStats from './components/LiveStats'
 import ThemeCustomizer from './components/ThemeCustomizer'
 import Accomplishments from './components/Accomplishments'
+import UpdateNotification from './components/UpdateNotification'
 import Callback from './pages/Callback'
 import CallbackDemo from './pages/CallbackDemo'
 
@@ -30,6 +31,7 @@ function App() {
   return (
     <Router>
       <div className="App">
+        <UpdateNotification />
         <EnhancedAnimations />
         <Navbar />
         <Routes>
