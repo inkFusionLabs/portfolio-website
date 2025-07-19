@@ -11,9 +11,17 @@ const CallbackDemo = () => {
     setLoading(true)
     try {
       const url = callbackService.generateOAuthUrl(service)
-      window.location.href = url
+      // Use a safer navigation method
+      if (url && url.startsWith('http')) {
+        window.open(url, '_blank', 'noopener,noreferrer')
+      } else {
+        navigate(url)
+      }
     } catch (error) {
       console.error(`Failed to generate ${service} OAuth URL:`, error)
+      // Show a fallback message
+      alert(`Demo: ${service} OAuth flow would redirect to external service`)
+    } finally {
       setLoading(false)
     }
   }
@@ -25,6 +33,8 @@ const CallbackDemo = () => {
       navigate(url)
     } catch (error) {
       console.error('Failed to generate download URL:', error)
+      alert('Demo: Download callback would trigger file download')
+    } finally {
       setLoading(false)
     }
   }
@@ -36,6 +46,8 @@ const CallbackDemo = () => {
       navigate(url)
     } catch (error) {
       console.error('Failed to generate newsletter URL:', error)
+      alert('Demo: Newsletter confirmation would activate subscription')
+    } finally {
       setLoading(false)
     }
   }
