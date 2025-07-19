@@ -8,6 +8,7 @@ import SocialProof from './components/SocialProof'
 import ScreenshotsGallery from './components/ScreenshotsGallery'
 import Roadmap from './components/Roadmap'
 import Changelog from './components/Changelog'
+import FAQ from './components/FAQ'
 import DownloadSection from './components/Download'
 import Footer from './components/Footer'
 import EnhancedAnimations from './components/EnhancedAnimations'
@@ -28,6 +29,7 @@ function App() {
               <SocialProof />
               <Roadmap />
               <Changelog />
+              <FAQ />
               <DownloadSection />
             </>
           } />
