@@ -21,6 +21,10 @@
     @apply bg-white/10 backdrop-blur-md border-2 border-white/30 text-white font-semibold py-4 px-10 rounded-full transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:scale-105;
   }
   
+  .glass {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl;
+  }
+  
   .glass-card {
     @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl;
   }

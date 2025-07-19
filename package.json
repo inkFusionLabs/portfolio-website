@@ -11,11 +11,14 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.0",
+    "clsx": "^2.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "lucide-react": "^0.263.1",
+    "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
-    "lucide-react": "^0.263.1",
-    "clsx": "^2.0.0",
     "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
@@ -29,4 +32,4 @@
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
-} 
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Users, MessageCircle, Bug, GitBranch, Heart, ThumbsUp, Star, Download, Globe, Mail, Github, Discord } from 'lucide-react'
+import { Users, MessageCircle, Bug, GitBranch, Heart, ThumbsUp, Star, Download, Globe, Mail, Github } from 'lucide-react'
 
 const CommunityFeatures = () => {
   const [activeTab, setActiveTab] = useState('forum')
@@ -249,8 +249,8 @@ const CommunityFeatures = () => {
                 <h3 className="text-2xl font-bold text-white">Community Forum</h3>
                 <div className="flex space-x-4">
                   <button className="btn-secondary px-4 py-2 rounded-full flex items-center space-x-2">
-                    <Discord className="w-4 h-4" />
-                    <span>Join Discord</span>
+                                    <MessageCircle className="w-4 h-4" />
+                <span>Join Discord</span>
                   </button>
                   <button className="btn-primary px-4 py-2 rounded-full">
                     New Topic

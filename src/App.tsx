@@ -7,7 +7,7 @@ import Discovery from './pages/Discovery'
 import Player from './pages/Player'
 import Library from './pages/Library'
 import Settings from './pages/Settings'
-import SpotifyCallback from './components/SpotifyCallback'
+import SpotifyCallback from './pages/SpotifyCallback'
 import { MusicProvider } from './contexts/MusicContext'
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
               <Route path="/player" element={<Player />} />
               <Route path="/library" element={<Library />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/callback" element={<SpotifyCallback />} />
+              <Route path="/spotify-callback" element={<SpotifyCallback />} />
             </Routes>
           </div>
         </main>

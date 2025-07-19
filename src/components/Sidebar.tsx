@@ -11,7 +11,8 @@ import {
   Heart,
   Clock,
   Radio,
-  Users
+  Users,
+  User
 } from 'lucide-react'
 import { useMusic } from '../contexts/MusicContext'
 
@@ -125,6 +126,24 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   <span className="text-sm text-green-400 capitalize">{service}</span>
                 </div>
               ))
+            )}
+            {state.userProfile && (
+              <div className="mt-3 p-2 rounded-lg bg-gray-800/30 border border-gray-700/50">
+                <div className="flex items-center space-x-2">
+                  {state.userProfile.images?.[0]?.url ? (
+                    <img
+                      src={state.userProfile.images[0].url}
+                      alt={state.userProfile.display_name}
+                      className="w-6 h-6 rounded-full"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 bg-harmony-500 rounded-full flex items-center justify-center">
+                      <User className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                  <span className="text-xs text-gray-300 truncate">{state.userProfile.display_name}</span>
+                </div>
+              </div>
             )}
           </div>
         </div>

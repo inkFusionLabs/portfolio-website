@@ -1,9 +1,82 @@
 import { useState, useEffect } from 'react'
-import { Settings as SettingsIcon, Music, Shield, Bell, Palette, Wifi, User, Key } from 'lucide-react'
+import { Settings as SettingsIcon, Music, Shield, Bell, Palette, Wifi, User, Copy, ExternalLink } from 'lucide-react'
 import { spotifyService } from '../services/spotify'
+import { open } from '@tauri-apps/api/shell'
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('services')
+  const [isSpotifyConnected, setIsSpotifyConnected] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [connectionError, setConnectionError] = useState('')
+
+  // Initialize Spotify service on component mount
+  useEffect(() => {
+    const initSpotify = async () => {
+      try {
+        const connected = await spotifyService.initialize()
+        setIsSpotifyConnected(connected)
+      } catch (error) {
+        console.error('Failed to initialize Spotify:', error)
+        setIsSpotifyConnected(false)
+      }
+    }
+    
+    initSpotify()
+  }, [])
+
+  // Listen for Spotify connection status updates
+  useEffect(() => {
+    const checkConnectionStatus = () => {
+      const accessToken = localStorage.getItem('spotify_access_token')
+      setIsSpotifyConnected(!!accessToken)
+    }
+    
+    // Check on mount
+    checkConnectionStatus()
+    
+    // Listen for storage changes (when tokens are added/removed)
+    const handleStorageChange = () => {
+      checkConnectionStatus()
+    }
+    
+    // Listen for custom Spotify connection event
+    const handleSpotifyConnected = () => {
+      setIsSpotifyConnected(true)
+      setConnectionError('')
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('spotifyConnected', handleSpotifyConnected)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('spotifyConnected', handleSpotifyConnected)
+    }
+  }, [])
+
+  const handleSpotifyConnect = async () => {
+    console.log('=== SPOTIFY CONNECT BUTTON CLICKED ===')
+    setIsLoading(true)
+    setConnectionError('')
+    
+    try {
+      // Start the OAuth flow (opens popup window)
+      await spotifyService.startAuth()
+      console.log('Spotify OAuth popup opened')
+      
+    } catch (error) {
+      console.error('Failed to start Spotify authentication:', error)
+      setConnectionError(error instanceof Error ? error.message : 'Failed to start authentication')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSpotifyDisconnect = () => {
+    spotifyService.disconnect()
+    setIsSpotifyConnected(false)
+    setConnectionError('')
+  }
 
   const tabs = [
     { id: 'services', label: 'Music Services', icon: Music },
@@ -18,10 +91,10 @@ export default function Settings() {
     <div className="h-full overflow-y-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Settings</h1>
-                  <div className="flex items-center space-x-2">
-            <SettingsIcon className="w-6 h-6 text-harmony-400" />
-            <span className="text-harmony-400 font-medium">Configuration</span>
-          </div>
+        <div className="flex items-center space-x-2">
+          <SettingsIcon className="w-6 h-6 text-harmony-400" />
+          <span className="text-harmony-400 font-medium">Configuration</span>
+        </div>
       </div>
 
       <div className="flex space-x-6">
@@ -59,29 +132,59 @@ export default function Settings() {
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-white">Spotify</h3>
                       <div className="flex items-center space-x-2">
-                        <div className={`w-3 h-3 rounded-full ${spotifyService.isConnected() ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                        <div className={`w-3 h-3 rounded-full ${isSpotifyConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
                         <span className="text-sm text-gray-400">
-                          {spotifyService.isConnected() ? 'Connected' : 'Disconnected'}
+                          {isSpotifyConnected ? 'Connected' : 'Disconnected'}
                         </span>
                       </div>
                     </div>
                     <p className="text-sm text-gray-400 mb-4">
                       Connect your Spotify account to access your music library and playlists.
                     </p>
-                    {spotifyService.isConnected() ? (
+                    
+                    {connectionError && (
+                      <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
+                        <p className="text-sm text-red-400">{connectionError}</p>
+                      </div>
+                    )}
+                    
+                    {isSpotifyConnected ? (
                       <button 
-                        onClick={() => spotifyService.disconnect()}
+                        onClick={handleSpotifyDisconnect}
                         className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
                       >
                         Disconnect Spotify
                       </button>
                     ) : (
-                      <button 
-                        onClick={() => spotifyService.authenticate()}
-                        className="w-full px-4 py-2 bg-harmony-500 hover:bg-harmony-600 text-white rounded-lg transition-colors"
-                      >
-                        Connect Spotify
-                      </button>
+                      <div className="space-y-2">
+                        <button 
+                          onClick={handleSpotifyConnect}
+                          disabled={isLoading}
+                          className="w-full px-4 py-2 bg-harmony-500 hover:bg-harmony-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                        >
+                          {isLoading ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                              <span>Opening...</span>
+                            </>
+                          ) : (
+                            <>
+                              <ExternalLink className="w-4 h-4" />
+                              <span>Connect Spotify</span>
+                            </>
+                          )}
+                        </button>
+                        
+                        <button 
+                          onClick={() => {
+                            console.log('Testing browser open...')
+                            window.open('https://www.google.com', '_blank')
+                          }}
+                          className="w-full px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white rounded text-xs transition-colors"
+                        >
+                          Test Browser (opens Google)
+                        </button>
+                      </div>
                     )}
                   </div>
 

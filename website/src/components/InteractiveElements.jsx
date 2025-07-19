@@ -196,6 +196,36 @@ const InteractiveElements = () => {
     }
   ]
 
+  const handleShareClick = (url) => {
+    try {
+      window.open(url, '_blank', 'noopener,noreferrer')
+    } catch (error) {
+      console.error('Error opening share URL:', error)
+    }
+  }
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText('https://omnifusionmusic.com')
+      alert('Link copied to clipboard!')
+    } catch (error) {
+      console.error('Failed to copy link:', error)
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea')
+      textArea.value = 'https://omnifusionmusic.com'
+      document.body.appendChild(textArea)
+      textArea.select()
+      try {
+        document.execCommand('copy')
+        alert('Link copied to clipboard!')
+      } catch (fallbackError) {
+        console.error('Fallback copy failed:', fallbackError)
+        alert('Please copy the link manually')
+      }
+      document.body.removeChild(textArea)
+    }
+  }
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'completed':
@@ -512,16 +542,14 @@ const InteractiveElements = () => {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                 {shareOptions.map((option, index) => (
-                  <a
+                  <button
                     key={index}
-                    href={option.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    onClick={() => handleShareClick(option.url)}
                     className={`glass p-6 rounded-2xl text-center hover:scale-105 transition-all duration-300 bg-gradient-to-r ${option.color}`}
                   >
                     <div className="text-4xl mb-4">{option.icon}</div>
                     <div className="text-white font-semibold">{option.platform}</div>
-                  </a>
+                  </button>
                 ))}
               </div>
 
@@ -534,7 +562,10 @@ const InteractiveElements = () => {
                     readOnly
                     className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white"
                   />
-                  <button className="btn-secondary px-6 py-3 rounded-full">
+                  <button 
+                    onClick={handleCopyLink}
+                    className="btn-secondary px-6 py-3 rounded-full"
+                  >
                     Copy
                   </button>
                 </div>
