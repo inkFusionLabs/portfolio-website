@@ -41,7 +41,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const { state } = useMusic()
 
   return (
-    <div className={`fixed left-0 top-0 h-full bg-gray-900/95 backdrop-blur-xl border-r border-gray-700/50 transition-all duration-300 z-50 ${
+    <div className={`fixed left-0 top-0 h-full bg-gray-900/95 backdrop-blur-xl border-r border-gray-700/50 transition-all duration-300 z-[100] ${
       isOpen ? 'w-64' : 'w-16'
     }`}>
       {/* Header */}
@@ -68,8 +68,12 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <NavLink
             key={item.path}
             to={item.path}
+            onClick={(e) => {
+              // Ensure navigation works properly
+              e.stopPropagation()
+            }}
             className={({ isActive }) =>
-              `flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group ${
+              `flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group cursor-pointer ${
                 isActive
                   ? 'bg-harmony-500/20 text-harmony-400 border border-harmony-500/30'
                   : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'

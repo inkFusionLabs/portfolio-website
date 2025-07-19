@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, ReactNode, useEffect, useMemo } from 'react'
+import React, { createContext, useContext, useReducer, ReactNode, useEffect, useMemo, useCallback } from 'react'
 import { spotifyService } from '../services/spotify'
 import { spotifyPlaybackService } from '../services/spotifyPlayback'
 
@@ -179,43 +179,7 @@ const MusicContext = createContext<MusicContextType | undefined>(undefined)
 export function MusicProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(musicReducer, initialState)
 
-  // Load user data on mount
-  useEffect(() => {
-    let mounted = true
-    
-    const initializeData = async () => {
-      if (!mounted) return
-      await loadUserData()
-    }
-    
-    initializeData()
-    
-    return () => {
-      mounted = false
-    }
-  }, [])
-
-  // Listen for Spotify connection events
-  useEffect(() => {
-    let mounted = true
-    
-    const handleSpotifyConnected = () => {
-      if (!mounted) return
-      console.log('Spotify connected event received - reloading user data')
-      loadUserData()
-    }
-    
-    window.addEventListener('spotifyConnected', handleSpotifyConnected)
-    
-    return () => {
-      mounted = false
-      window.removeEventListener('spotifyConnected', handleSpotifyConnected)
-    }
-  }, [])
-
-
-
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
       // Check if Spotify is connected
@@ -304,9 +268,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
-  }
+  }, [])
 
-  const loadPlaylists = async () => {
+  const loadPlaylists = useCallback(async () => {
     try {
       const spotifyPlaylists = await spotifyService.getUserPlaylists()
       const formattedPlaylists = spotifyPlaylists.map((playlist: any) => ({
@@ -321,9 +285,43 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Failed to load playlists:', error)
     }
-  }
+  }, [])
 
-  const playTrack = async (track: Track) => {
+  // Load user data on mount
+  useEffect(() => {
+    let mounted = true
+    
+    const initializeData = async () => {
+      if (!mounted) return
+      await loadUserData()
+    }
+    
+    initializeData()
+    
+    return () => {
+      mounted = false
+    }
+  }, [loadUserData])
+
+  // Listen for Spotify connection events
+  useEffect(() => {
+    let mounted = true
+    
+    const handleSpotifyConnected = () => {
+      if (!mounted) return
+      console.log('Spotify connected event received - reloading user data')
+      loadUserData()
+    }
+    
+    window.addEventListener('spotifyConnected', handleSpotifyConnected)
+    
+    return () => {
+      mounted = false
+      window.removeEventListener('spotifyConnected', handleSpotifyConnected)
+    }
+  }, [loadUserData])
+
+  const playTrack = useCallback(async (track: Track) => {
     if (track.service === 'spotify' && spotifyPlaybackService.isConnected()) {
       try {
         // Convert track URL to Spotify URI
@@ -344,9 +342,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
       dispatch({ type: 'SET_PLAYING', payload: true })
     }
-  }
+  }, [])
 
-  const pauseTrack = async () => {
+  const pauseTrack = useCallback(async () => {
     if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
       try {
         await spotifyPlaybackService.pause()
@@ -355,9 +353,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
       }
     }
     dispatch({ type: 'SET_PLAYING', payload: false })
-  }
+  }, [state.connectedServices])
 
-  const nextTrack = async () => {
+  const nextTrack = useCallback(async () => {
     if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
       try {
         await spotifyPlaybackService.nextTrack()
@@ -370,9 +368,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'SET_CURRENT_TRACK', payload: nextTrack })
       dispatch({ type: 'SET_QUEUE', payload: newQueue })
     }
-  }
+  }, [state.connectedServices, state.queue])
 
-  const previousTrack = async () => {
+  const previousTrack = useCallback(async () => {
     if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
       try {
         await spotifyPlaybackService.previousTrack()
@@ -380,17 +378,17 @@ export function MusicProvider({ children }: { children: ReactNode }) {
         console.error('Failed to go to previous track:', error)
       }
     }
-  }
+  }, [state.connectedServices])
 
-  const addToQueue = (track: Track) => {
+  const addToQueue = useCallback((track: Track) => {
     dispatch({ type: 'ADD_TO_QUEUE', payload: track })
-  }
+  }, [])
 
-  const removeFromQueue = (trackId: string) => {
+  const removeFromQueue = useCallback((trackId: string) => {
     dispatch({ type: 'REMOVE_FROM_QUEUE', payload: trackId })
-  }
+  }, [])
 
-  const setVolume = async (volume: number) => {
+  const setVolume = useCallback(async (volume: number) => {
     if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
       try {
         await spotifyPlaybackService.setVolume(volume)
@@ -399,9 +397,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
       }
     }
     dispatch({ type: 'SET_VOLUME', payload: volume })
-  }
+  }, [state.connectedServices])
 
-  const seekTo = async (position: number) => {
+  const seekTo = useCallback(async (position: number) => {
     if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
       try {
         await spotifyPlaybackService.seekTo(position)
@@ -409,9 +407,9 @@ export function MusicProvider({ children }: { children: ReactNode }) {
         console.error('Failed to seek:', error)
       }
     }
-  }
+  }, [state.connectedServices])
 
-  const searchMusic = async (query: string) => {
+  const searchMusic = useCallback(async (query: string) => {
     if (!query.trim()) return
     
     dispatch({ type: 'SET_LOADING', payload: true })
@@ -434,17 +432,17 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
-  }
+  }, [])
 
-  const connectService = (service: string) => {
+  const connectService = useCallback((service: string) => {
     if (!state.connectedServices.includes(service)) {
       dispatch({ type: 'SET_CONNECTED_SERVICES', payload: [...state.connectedServices, service] })
     }
-  }
+  }, [state.connectedServices])
 
-  const disconnectService = (service: string) => {
+  const disconnectService = useCallback((service: string) => {
     dispatch({ type: 'SET_CONNECTED_SERVICES', payload: state.connectedServices.filter(s => s !== service) })
-  }
+  }, [state.connectedServices])
 
   // Cleanup on unmount
   useEffect(() => {

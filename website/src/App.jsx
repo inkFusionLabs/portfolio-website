@@ -11,6 +11,7 @@ import Roadmap from './components/Roadmap'
 import Changelog from './components/Changelog'
 import FAQ from './components/FAQ'
 import DownloadSection from './components/Download'
+import BetaTesting from './components/BetaTesting'
 import Footer from './components/Footer'
 import EnhancedAnimations from './components/EnhancedAnimations'
 import ComparisonTable from './components/ComparisonTable'
@@ -52,6 +53,7 @@ function App() {
               <InteractiveMusicPlayer />
               <LiveStats />
               <ThemeCustomizer />
+              <BetaTesting />
               <Roadmap />
               <Changelog />
               <FAQ />

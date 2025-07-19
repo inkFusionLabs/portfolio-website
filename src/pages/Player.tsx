@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, SkipBack, Volume2, VolumeX, Repeat, Shuffle, Heart, Plus, Share2, MoreHorizontal, Loader } from 'lucide-react'
 import { useMusic } from '../contexts/MusicContext'
 
@@ -7,19 +7,23 @@ export default function Player() {
     const { state, playTrack, pauseTrack, nextTrack, previousTrack, setVolume, seekTo } = useMusic()
     const [volume, setLocalVolume] = useState(70)
     const [isMuted, setIsMuted] = useState(false)
+    const volumeInitialized = useRef(false)
 
     // Use real playback state from Spotify with safe calculations
     const currentTime = (state.currentPosition || 0) / 1000 // Convert from ms to seconds
     const duration = (state.currentDuration || 0) / 1000 // Convert from ms to seconds
 
-  // Check browser compatibility
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-  const isPlaybackSupported = state.connectedServices.includes('spotify')
+    // Check browser compatibility
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+    const isPlaybackSupported = state.connectedServices.includes('spotify')
 
-  // Update volume in context when local volume changes
-  useEffect(() => {
-    setVolume(volume / 100)
-  }, [volume, setVolume])
+    // Update volume in context when local volume changes (only once on mount)
+    useEffect(() => {
+      if (!volumeInitialized.current) {
+        setVolume(volume / 100)
+        volumeInitialized.current = true
+      }
+    }, []) // Only run once on mount
 
   const formatTime = (seconds: number) => {
     if (!seconds || isNaN(seconds)) return '0:00'
@@ -71,7 +75,7 @@ export default function Player() {
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6 space-y-6">
+    <div className="h-full overflow-y-auto p-6 space-y-6 relative pointer-events-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Music Player</h1>
         <div className="flex items-center space-x-2">

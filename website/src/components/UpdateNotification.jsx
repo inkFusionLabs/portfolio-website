@@ -8,16 +8,20 @@ const UpdateNotification = () => {
   useEffect(() => {
     // Check for updates every 5 minutes
     const checkForUpdates = () => {
-      // Check if there's a new version by comparing build timestamps
-      const currentBuildTime = import.meta.env.VITE_BUILD_TIME || Date.now()
-      const lastKnownBuildTime = localStorage.getItem('lastBuildTime')
-      
-      if (lastKnownBuildTime && parseInt(currentBuildTime) > parseInt(lastKnownBuildTime)) {
-        setShowUpdate(true)
+      try {
+        // Check if there's a new version by comparing build timestamps
+        const currentBuildTime = import.meta.env.VITE_BUILD_TIME || Date.now()
+        const lastKnownBuildTime = localStorage.getItem('lastBuildTime')
+        
+        if (lastKnownBuildTime && parseInt(currentBuildTime) > parseInt(lastKnownBuildTime)) {
+          setShowUpdate(true)
+        }
+        
+        // Store current build time
+        localStorage.setItem('lastBuildTime', currentBuildTime)
+      } catch (error) {
+        console.warn('Error checking for updates:', error)
       }
-      
-      // Store current build time
-      localStorage.setItem('lastBuildTime', currentBuildTime)
     }
 
     // Check immediately
