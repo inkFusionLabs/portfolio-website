@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Features from './components/Features'
 import InteractiveDemo from './components/InteractiveDemo'
+import SocialProof from './components/SocialProof'
 import DownloadSection from './components/Download'
 import Footer from './components/Footer'
 import EnhancedAnimations from './components/EnhancedAnimations'
@@ -20,6 +21,7 @@ function App() {
               <Hero />
               <Features />
               <InteractiveDemo />
+              <SocialProof />
               <DownloadSection />
             </>
           } />
