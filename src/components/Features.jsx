@@ -54,7 +54,7 @@ const Features = () => {
     <section id="features" className="py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-20 fade-in">
           <div className="inline-flex items-center px-4 py-2 glass rounded-full mb-6">
             <Sparkles className="w-4 h-4 text-yellow-400 mr-2" />
             <span className="text-sm font-medium">Powerful Features</span>
@@ -91,7 +91,7 @@ const Features = () => {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {features.map((feature, index) => (
-            <div key={index} className="feature-card group hover:scale-105 transition-all duration-500">
+            <div key={index} className="feature-card group hover:scale-105 transition-all duration-500 fade-in">
               <div className={`w-20 h-20 rounded-3xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white mb-8 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl`}>
                 {feature.icon}
               </div>

@@ -7,17 +7,17 @@ const Hero = () => {
       {/* Enhanced Background Gradient */}
       <div className="absolute inset-0 hero-gradient opacity-95"></div>
       
-      {/* Enhanced Animated Background Elements */}
+      {/* Enhanced Animated Background Elements with Parallax */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl floating-element"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl floating-element-delayed"></div>
-        <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-pink-500/25 rounded-full blur-3xl floating-element-delayed-2"></div>
-        <div className="absolute bottom-1/3 left-1/4 w-72 h-72 bg-cyan-500/20 rounded-full blur-3xl floating-element"></div>
+        <div className="absolute top-20 left-10 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl floating-element parallax-slow"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl floating-element-delayed parallax-medium"></div>
+        <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-pink-500/25 rounded-full blur-3xl floating-element-delayed-2 parallax-fast"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-72 h-72 bg-cyan-500/20 rounded-full blur-3xl floating-element parallax-slow"></div>
         
-        {/* Floating particles */}
-        <div className="absolute top-1/4 left-1/3 w-2 h-2 bg-white/60 rounded-full floating-element"></div>
-        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-white/40 rounded-full floating-element-delayed"></div>
-        <div className="absolute top-1/2 left-1/6 w-1.5 h-1.5 bg-white/50 rounded-full floating-element-delayed-2"></div>
+        {/* Floating particles with parallax */}
+        <div className="absolute top-1/4 left-1/3 w-2 h-2 bg-white/60 rounded-full floating-element parallax-fast"></div>
+        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-white/40 rounded-full floating-element-delayed parallax-medium"></div>
+        <div className="absolute top-1/2 left-1/6 w-1.5 h-1.5 bg-white/50 rounded-full floating-element-delayed-2 parallax-slow"></div>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -46,12 +46,19 @@ const Hero = () => {
 
           {/* Enhanced CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <button className="btn-primary flex items-center space-x-3 group">
+            <button className="btn-primary flex items-center space-x-3 group fade-in">
               <Download className="w-6 h-6 group-hover:animate-bounce" />
               <span className="text-lg">Download for Free</span>
+              <div className="sound-wave">
+                <div className="sound-wave-bar"></div>
+                <div className="sound-wave-bar"></div>
+                <div className="sound-wave-bar"></div>
+                <div className="sound-wave-bar"></div>
+                <div className="sound-wave-bar"></div>
+              </div>
               <Sparkles className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </button>
-            <button className="btn-secondary flex items-center space-x-3 group">
+            <button className="btn-secondary flex items-center space-x-3 group fade-in">
               <Play className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
               <span className="text-lg">Watch Demo</span>
             </button>

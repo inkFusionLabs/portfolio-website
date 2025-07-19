@@ -91,7 +91,7 @@
   animation: shimmer 2s infinite;
 }
 
-/* Scrollbar styling */
+/* Enhanced Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -108,4 +108,179 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(45deg, #5a67d8, #6b46c1);
+}
+
+/* Parallax scrolling effects */
+.parallax-bg {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.parallax-slow {
+  transform: translateY(calc(var(--scroll) * 0.5px));
+}
+
+.parallax-medium {
+  transform: translateY(calc(var(--scroll) * 0.3px));
+}
+
+.parallax-fast {
+  transform: translateY(calc(var(--scroll) * 0.1px));
+}
+
+/* Mouse-following elements */
+.mouse-follower {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: all 0.1s ease;
+  mix-blend-mode: difference;
+}
+
+.mouse-follower-dot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.mouse-follower-ring {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+/* Sound wave animations */
+.sound-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 20px;
+}
+
+.sound-wave-bar {
+  width: 3px;
+  background: linear-gradient(to top, #667eea, #764ba2);
+  border-radius: 2px;
+  animation: soundWave 1.5s ease-in-out infinite;
+}
+
+.sound-wave-bar:nth-child(1) { animation-delay: 0s; }
+.sound-wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.sound-wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.sound-wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.sound-wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes soundWave {
+  0%, 100% { height: 4px; }
+  50% { height: 20px; }
+}
+
+/* Music-themed loading animations */
+.music-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.music-note {
+  font-size: 24px;
+  animation: musicBounce 1.5s ease-in-out infinite;
+  color: #667eea;
+}
+
+.music-note:nth-child(1) { animation-delay: 0s; }
+.music-note:nth-child(2) { animation-delay: 0.2s; }
+.music-note:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes musicBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(5deg); }
+  50% { transform: translateY(-20px) rotate(0deg); }
+  75% { transform: translateY(-10px) rotate(-5deg); }
+}
+
+/* Enhanced hover states with sound waves */
+.btn-primary:hover .sound-wave {
+  display: flex;
+}
+
+.btn-primary .sound-wave {
+  display: none;
+  margin-left: 8px;
+}
+
+/* Page transition effects */
+.page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: 10000;
+  transform: translateY(100%);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-transition.active {
+  transform: translateY(0);
+}
+
+/* Smooth fade effects */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Enhanced button hover effects */
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Floating music notes */
+.floating-note {
+  position: absolute;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.3);
+  animation: floatNote 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes floatNote {
+  0%, 100% { 
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: translateY(-20px) rotate(90deg) scale(1.1);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translateY(-40px) rotate(180deg) scale(1);
+    opacity: 0.3;
+  }
+  75% { 
+    transform: translateY(-20px) rotate(270deg) scale(0.9);
+    opacity: 0.6;
+  }
 } 

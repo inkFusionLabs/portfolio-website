@@ -6,11 +6,13 @@ import Features from './components/Features'
 import InteractiveDemo from './components/InteractiveDemo'
 import DownloadSection from './components/Download'
 import Footer from './components/Footer'
+import EnhancedAnimations from './components/EnhancedAnimations'
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-900">
+        <EnhancedAnimations />
         <Navbar />
         <Routes>
           <Route path="/" element={
