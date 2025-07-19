@@ -21,6 +21,8 @@ const Navbar = () => {
             <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
             <a href="#demo" className="text-gray-300 hover:text-white transition-colors">Demo</a>
             <a href="#social-proof" className="text-gray-300 hover:text-white transition-colors">Community</a>
+            <a href="#roadmap" className="text-gray-300 hover:text-white transition-colors">Roadmap</a>
+            <a href="#changelog" className="text-gray-300 hover:text-white transition-colors">Updates</a>
             <a href="#download" className="text-gray-300 hover:text-white transition-colors">Download</a>
             <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
             <button className="btn-primary">Download Now</button>
@@ -44,6 +46,8 @@ const Navbar = () => {
               <a href="#features" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Features</a>
               <a href="#demo" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Demo</a>
               <a href="#social-proof" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Community</a>
+              <a href="#roadmap" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Roadmap</a>
+              <a href="#changelog" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Updates</a>
               <a href="#download" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Download</a>
               <a href="#about" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">About</a>
               <button className="w-full mt-4 btn-primary">Download Now</button>

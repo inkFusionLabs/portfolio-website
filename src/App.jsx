@@ -5,6 +5,8 @@ import Hero from './components/Hero'
 import Features from './components/Features'
 import InteractiveDemo from './components/InteractiveDemo'
 import SocialProof from './components/SocialProof'
+import Roadmap from './components/Roadmap'
+import Changelog from './components/Changelog'
 import DownloadSection from './components/Download'
 import Footer from './components/Footer'
 import EnhancedAnimations from './components/EnhancedAnimations'
@@ -22,6 +24,8 @@ function App() {
               <Features />
               <InteractiveDemo />
               <SocialProof />
+              <Roadmap />
+              <Changelog />
               <DownloadSection />
             </>
           } />
