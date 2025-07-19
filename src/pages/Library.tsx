@@ -111,6 +111,18 @@ export default function Library() {
     }
   }
 
+  const handleTrackClick = async (track: LibraryTrack) => {
+    console.log('🎵 Library: Track clicked:', track.title)
+    try {
+      await playTrack(track)
+      console.log('🎵 Library: Track play initiated')
+    } catch (error) {
+      console.error('🎵 Library: Failed to play track:', error)
+      // Show a user-friendly error message
+      alert('Failed to play track. Please check your Spotify connection.')
+    }
+  }
+
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = seconds % 60
@@ -138,6 +150,13 @@ export default function Library() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Music Library</h1>
         <div className="flex items-center space-x-2">
+          {/* Connection Status */}
+          <div className="flex items-center space-x-2 px-3 py-1 rounded-lg bg-gray-800/50">
+            <div className={`w-2 h-2 rounded-full ${state.connectedServices.includes('spotify') ? 'bg-green-500' : 'bg-red-500'}`}></div>
+            <span className="text-sm text-gray-300">
+              {state.connectedServices.includes('spotify') ? 'Spotify Connected' : 'Spotify Disconnected'}
+            </span>
+          </div>
           {filteredTracks.length > 0 && (
             <>
               <button
@@ -274,10 +293,12 @@ export default function Library() {
             {viewMode === 'grid' ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredTracks.map((track) => (
-                  <div 
+                  <div
                     key={track.id} 
-                    className="bg-gray-800/30 rounded-lg p-4 hover:bg-gray-800/50 transition-colors cursor-pointer group"
-                    onClick={() => playTrack(track)}
+                    className={`bg-gray-800/30 rounded-lg p-4 hover:bg-gray-800/50 transition-colors cursor-pointer group ${
+                      state.currentTrack?.id === track.id ? 'ring-2 ring-harmony-500 bg-harmony-500/10' : ''
+                    }`}
+                    onClick={() => handleTrackClick(track)}
                   >
                     <div className="aspect-square bg-gradient-to-br from-harmony-500/20 to-primary-500/20 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
                       {track.artwork ? (
@@ -287,11 +308,16 @@ export default function Library() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-3xl">🎵</span>
+                        <Music className="w-8 h-8 text-gray-400" />
                       )}
+                      {/* Play indicator overlay */}
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <Play className="w-8 h-8 text-white" />
                       </div>
+                      {/* Currently playing indicator */}
+                      {state.currentTrack?.id === track.id && state.isPlaying && (
+                        <div className="absolute top-2 right-2 w-3 h-3 bg-harmony-500 rounded-full animate-pulse"></div>
+                      )}
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-2 truncate">{track.title}</h3>
                     <p className="text-sm text-gray-400 mb-3 truncate">{track.artist}</p>
@@ -326,10 +352,12 @@ export default function Library() {
                 {filteredTracks.map((track) => (
                   <div 
                     key={track.id} 
-                    className="flex items-center space-x-4 p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors cursor-pointer"
-                    onClick={() => playTrack(track)}
+                    className={`flex items-center space-x-4 p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors cursor-pointer ${
+                      state.currentTrack?.id === track.id ? 'ring-2 ring-harmony-500 bg-harmony-500/10' : ''
+                    }`}
+                    onClick={() => handleTrackClick(track)}
                   >
-                    <div className="w-12 h-12 bg-gradient-to-br from-harmony-500/20 to-primary-500/20 rounded-lg flex items-center justify-center overflow-hidden">
+                    <div className="w-12 h-12 bg-gradient-to-br from-harmony-500/20 to-primary-500/20 rounded-lg flex items-center justify-center overflow-hidden relative">
                       {track.artwork ? (
                         <img 
                           src={track.artwork} 
@@ -337,7 +365,11 @@ export default function Library() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-lg">🎵</span>
+                        <Music className="w-6 h-6 text-gray-400" />
+                      )}
+                      {/* Currently playing indicator */}
+                      {state.currentTrack?.id === track.id && state.isPlaying && (
+                        <div className="absolute top-1 right-1 w-2 h-2 bg-harmony-500 rounded-full animate-pulse"></div>
                       )}
                     </div>
                     <div className="flex-1">

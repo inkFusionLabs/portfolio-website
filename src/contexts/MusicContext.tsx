@@ -322,22 +322,35 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   }, [loadUserData])
 
   const playTrack = useCallback(async (track: Track) => {
+    console.log('🎵 Attempting to play track:', track)
+    console.log('🎵 Track service:', track.service)
+    console.log('🎵 Connected services:', state.connectedServices)
+    console.log('🎵 Playback service connected:', spotifyPlaybackService.isConnected())
+    
     if (track.service === 'spotify' && spotifyPlaybackService.isConnected()) {
       try {
+        console.log('🎵 Using Spotify playback service')
         // Convert track URL to Spotify URI
         const spotifyUri = `spotify:track:${track.id}`
+        console.log('🎵 Spotify URI:', spotifyUri)
         const success = await spotifyPlaybackService.playTrack(spotifyUri)
+        console.log('🎵 Playback success:', success)
         if (success) {
           dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
           dispatch({ type: 'SET_PLAYING', payload: true })
+          console.log('🎵 Track started playing successfully')
+        } else {
+          console.error('🎵 Failed to start playback')
         }
       } catch (error) {
-        console.error('Failed to play track:', error)
+        console.error('🎵 Failed to play track:', error)
         // Fallback to UI-only mode
         dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
         dispatch({ type: 'SET_PLAYING', payload: true })
+        console.log('🎵 Fallback to UI-only mode')
       }
     } else {
+      console.log('🎵 Using UI-only mode (no Spotify connection)')
       // For other services or when playback service is not available, just update the UI state
       dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
       dispatch({ type: 'SET_PLAYING', payload: true })

@@ -24,7 +24,7 @@ const Navbar = () => {
             <a href="#faq" className="text-gray-300 hover:text-white transition-colors">FAQ</a>
             <a href="#download" className="text-gray-300 hover:text-white transition-colors">Download</a>
             <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
-            <button className="btn-primary">Download Now</button>
+            <a href="#beta-testing" className="btn-primary">Join Beta</a>
           </div>
 
           {/* Mobile menu button */}

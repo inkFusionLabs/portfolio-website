@@ -1,0 +1,26 @@
+{
+  "name": "omnifusion-beta-api",
+  "version": "1.0.0",
+  "description": "Beta testing API server for OmniFusion Music",
+  "main": "beta-server.js",
+  "scripts": {
+    "start": "node beta-server.js",
+    "dev": "nodemon beta-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "beta-testing",
+    "api",
+    "omnifusion",
+    "music"
+  ],
+  "author": "OmniFusion Team",
+  "license": "MIT"
+} 
