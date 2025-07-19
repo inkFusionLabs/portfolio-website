@@ -3,13 +3,14 @@ import { Play, Pause, SkipForward, SkipBack, Volume2, VolumeX, Repeat, Shuffle, 
 import { useMusic } from '../contexts/MusicContext'
 
 export default function Player() {
-  const { state, playTrack, pauseTrack, nextTrack, previousTrack, setVolume, seekTo } = useMusic()
-  const [volume, setLocalVolume] = useState(70)
-  const [isMuted, setIsMuted] = useState(false)
+  try {
+    const { state, playTrack, pauseTrack, nextTrack, previousTrack, setVolume, seekTo } = useMusic()
+    const [volume, setLocalVolume] = useState(70)
+    const [isMuted, setIsMuted] = useState(false)
 
-  // Use real playback state from Spotify
-  const currentTime = state.currentPosition / 1000 // Convert from ms to seconds
-  const duration = state.currentDuration / 1000 // Convert from ms to seconds
+    // Use real playback state from Spotify with safe calculations
+    const currentTime = (state.currentPosition || 0) / 1000 // Convert from ms to seconds
+    const duration = (state.currentDuration || 0) / 1000 // Convert from ms to seconds
 
   // Check browser compatibility
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
@@ -21,6 +22,7 @@ export default function Player() {
   }, [volume, setVolume])
 
   const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds)) return '0:00'
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = Math.floor(seconds % 60)
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
@@ -51,16 +53,20 @@ export default function Player() {
   }
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isPlaybackSupported) return
+    if (!isPlaybackSupported || !duration || duration <= 0) return
     
-    const rect = e.currentTarget.getBoundingClientRect()
-    const clickX = e.clientX - rect.left
-    const percentage = clickX / rect.width
-    const newTime = percentage * duration
-    // Seek to the new position in Spotify
-    if (state.connectedServices.includes('spotify')) {
-      const newPositionMs = Math.round(newTime * 1000)
-      seekTo(newPositionMs)
+    try {
+      const rect = e.currentTarget.getBoundingClientRect()
+      const clickX = e.clientX - rect.left
+      const percentage = clickX / rect.width
+      const newTime = percentage * duration
+      // Seek to the new position in Spotify
+      if (state.connectedServices.includes('spotify')) {
+        const newPositionMs = Math.round(newTime * 1000)
+        seekTo(newPositionMs)
+      }
+    } catch (error) {
+      console.error('Error handling progress click:', error)
     }
   }
 
@@ -146,7 +152,7 @@ export default function Player() {
                 <div 
                   className="bg-harmony-500 h-2 rounded-full transition-all duration-300" 
                   style={{ 
-                    width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` 
+                    width: `${duration > 0 ? Math.min((currentTime / duration) * 100, 100) : 0}%` 
                   }}
                 ></div>
               </div>
@@ -312,4 +318,24 @@ export default function Player() {
       )}
     </div>
   )
+  } catch (error) {
+    console.error('Player page error:', error)
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">Player Error</h2>
+          <p className="text-gray-400 mb-4">Something went wrong loading the player</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-harmony-500 hover:bg-harmony-600 text-white rounded-lg transition-colors"
+          >
+            Reload Page
+          </button>
+        </div>
+      </div>
+    )
+  }
 } 

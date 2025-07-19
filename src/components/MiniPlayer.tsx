@@ -1,13 +1,19 @@
 import { Play, Pause, SkipForward, SkipBack, Volume2, VolumeX } from 'lucide-react'
 import { useMusic } from '../contexts/MusicContext'
-import { useState } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 
 export default function MiniPlayer() {
-  const { state, playTrack, pauseTrack, nextTrack, previousTrack, setVolume } = useMusic()
-  const [isMuted, setIsMuted] = useState(false)
-  const [volume, setLocalVolume] = useState(70)
+  try {
+    const { state, playTrack, pauseTrack, nextTrack, previousTrack, setVolume } = useMusic()
+    const [isMuted, setIsMuted] = useState(false)
+    const [volume, setLocalVolume] = useState(70)
 
-  const handlePlayPause = () => {
+    // Add error boundary and null checks
+    if (!state || !state.currentTrack) {
+      return null
+    }
+
+  const handlePlayPause = useCallback(() => {
     if (state.currentTrack) {
       if (state.isPlaying) {
         pauseTrack()
@@ -15,15 +21,15 @@ export default function MiniPlayer() {
         playTrack(state.currentTrack)
       }
     }
-  }
+  }, [state.currentTrack, state.isPlaying, pauseTrack, playTrack])
 
-  const handleVolumeChange = (newVolume: number) => {
+  const handleVolumeChange = useCallback((newVolume: number) => {
     setLocalVolume(newVolume)
     setVolume(newVolume / 100)
     setIsMuted(newVolume === 0)
-  }
+  }, [setVolume])
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     if (isMuted) {
       setIsMuted(false)
       setLocalVolume(70)
@@ -33,12 +39,9 @@ export default function MiniPlayer() {
       setLocalVolume(0)
       setVolume(0)
     }
-  }
+  }, [isMuted, setVolume])
 
-  // Don't show mini-player if no track is playing
-  if (!state.currentTrack) {
-    return null
-  }
+
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-lg border-t border-gray-800 z-50">
@@ -117,35 +120,32 @@ export default function MiniPlayer() {
       </div>
 
       {/* Progress Bar */}
-      {state.currentDuration > 0 && (
-        <div className="w-full bg-gray-800 h-1">
-          <div 
-            className="bg-harmony-500 h-1 transition-all duration-300" 
-            style={{ 
-              width: `${state.currentPosition > 0 ? (state.currentPosition / state.currentDuration) * 100 : 0}%` 
-            }}
-          ></div>
-        </div>
-      )}
+      {(() => {
+        const progress = useMemo(() => {
+          if (state.currentDuration > 0 && state.currentPosition >= 0) {
+            return Math.min((state.currentPosition / state.currentDuration) * 100, 100)
+          }
+          return 0
+        }, [state.currentPosition, state.currentDuration])
 
-      <style jsx>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          height: 12px;
-          width: 12px;
-          border-radius: 50%;
-          background: #1db954;
-          cursor: pointer;
+        if (state.currentDuration > 0 && state.currentPosition >= 0) {
+          return (
+            <div className="w-full bg-gray-800 h-1">
+              <div 
+                className="bg-harmony-500 h-1 transition-all duration-300" 
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+          )
         }
-        .slider::-moz-range-thumb {
-          height: 12px;
-          width: 12px;
-          border-radius: 50%;
-          background: #1db954;
-          cursor: pointer;
-          border: none;
-        }
-      `}</style>
+        return null
+      })()}
+
+
     </div>
   )
+  } catch (error) {
+    console.error('MiniPlayer error:', error)
+    return null
+  }
 } 

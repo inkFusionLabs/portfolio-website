@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, ReactNode, useEffect, useMemo } from 'react'
 import { spotifyService } from '../services/spotify'
 import { spotifyPlaybackService } from '../services/spotifyPlayback'
 
@@ -181,12 +181,26 @@ export function MusicProvider({ children }: { children: ReactNode }) {
 
   // Load user data on mount
   useEffect(() => {
-    loadUserData()
+    let mounted = true
+    
+    const initializeData = async () => {
+      if (!mounted) return
+      await loadUserData()
+    }
+    
+    initializeData()
+    
+    return () => {
+      mounted = false
+    }
   }, [])
 
   // Listen for Spotify connection events
   useEffect(() => {
+    let mounted = true
+    
     const handleSpotifyConnected = () => {
+      if (!mounted) return
       console.log('Spotify connected event received - reloading user data')
       loadUserData()
     }
@@ -194,6 +208,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     window.addEventListener('spotifyConnected', handleSpotifyConnected)
     
     return () => {
+      mounted = false
       window.removeEventListener('spotifyConnected', handleSpotifyConnected)
     }
   }, [])
@@ -214,28 +229,39 @@ export function MusicProvider({ children }: { children: ReactNode }) {
           try {
             const playbackConnected = await spotifyPlaybackService.initialize(accessToken)
             if (playbackConnected) {
-              // Set up playback state listeners
+              // Set up playback state listeners with throttling
+              let lastUpdate = 0
+              const throttleDelay = 100 // 100ms throttle
+              
               spotifyPlaybackService.onStateUpdate((playbackState) => {
-                dispatch({ type: 'SET_PLAYBACK_STATE', payload: playbackState })
-                if (playbackState) {
-                  dispatch({ type: 'SET_PLAYING', payload: !playbackState.paused })
-                  dispatch({ type: 'SET_CURRENT_POSITION', payload: playbackState.position })
-                  dispatch({ type: 'SET_CURRENT_DURATION', payload: playbackState.duration })
+                try {
+                  const now = Date.now()
+                  if (now - lastUpdate < throttleDelay) return
+                  lastUpdate = now
                   
-                  // Update current track if it changed
-                  if (playbackState.track_window.current_track) {
-                    const currentTrack: Track = {
-                      id: playbackState.track_window.current_track.id,
-                      title: playbackState.track_window.current_track.name,
-                      artist: playbackState.track_window.current_track.artists[0]?.name || 'Unknown Artist',
-                      album: playbackState.track_window.current_track.album.name,
-                      duration: Math.round(playbackState.duration / 1000),
-                      service: 'spotify' as const,
-                      artwork: playbackState.track_window.current_track.album.images[0]?.url || '',
-                      url: playbackState.track_window.current_track.uri
+                  dispatch({ type: 'SET_PLAYBACK_STATE', payload: playbackState })
+                  if (playbackState) {
+                    dispatch({ type: 'SET_PLAYING', payload: !playbackState.paused })
+                    dispatch({ type: 'SET_CURRENT_POSITION', payload: playbackState.position || 0 })
+                    dispatch({ type: 'SET_CURRENT_DURATION', payload: playbackState.duration || 0 })
+                    
+                    // Update current track if it changed
+                    if (playbackState.track_window?.current_track) {
+                      const currentTrack: Track = {
+                        id: playbackState.track_window.current_track.id,
+                        title: playbackState.track_window.current_track.name,
+                        artist: playbackState.track_window.current_track.artists[0]?.name || 'Unknown Artist',
+                        album: playbackState.track_window.current_track.album?.name || 'Unknown Album',
+                        duration: Math.round((playbackState.duration || 0) / 1000),
+                        service: 'spotify' as const,
+                        artwork: playbackState.track_window.current_track.album?.images[0]?.url || '',
+                        url: playbackState.track_window.current_track.uri
+                      }
+                      dispatch({ type: 'SET_CURRENT_TRACK', payload: currentTrack })
                     }
-                    dispatch({ type: 'SET_CURRENT_TRACK', payload: currentTrack })
                   }
+                } catch (error) {
+                  console.error('Error updating playback state:', error)
                 }
               })
               
@@ -420,7 +446,19 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_CONNECTED_SERVICES', payload: state.connectedServices.filter(s => s !== service) })
   }
 
-  const value: MusicContextType = {
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Disconnect playback service
+      try {
+        spotifyPlaybackService.disconnect()
+      } catch (error) {
+        console.error('Error disconnecting playback service:', error)
+      }
+    }
+  }, [])
+
+  const value: MusicContextType = useMemo(() => ({
     state,
     dispatch,
     playTrack,
@@ -436,7 +474,22 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     disconnectService,
     loadUserData,
     loadPlaylists,
-  }
+  }), [
+    state,
+    playTrack,
+    pauseTrack,
+    nextTrack,
+    previousTrack,
+    addToQueue,
+    removeFromQueue,
+    setVolume,
+    seekTo,
+    searchMusic,
+    connectService,
+    disconnectService,
+    loadUserData,
+    loadPlaylists,
+  ])
 
   return (
     <MusicContext.Provider value={value}>

@@ -22,6 +22,7 @@ import GitHubStatsTest from './components/GitHubStatsTest'
 import InteractiveMusicPlayer from './components/InteractiveMusicPlayer'
 import LiveStats from './components/LiveStats'
 import ThemeCustomizer from './components/ThemeCustomizer'
+import Accomplishments from './components/Accomplishments'
 import Callback from './pages/Callback'
 import CallbackDemo from './pages/CallbackDemo'
 
@@ -45,6 +46,7 @@ function App() {
               <CommunityFeatures />
               <SponsorshipIntegration />
               <InteractiveElements />
+              <Accomplishments />
               <InteractiveMusicPlayer />
               <LiveStats />
               <ThemeCustomizer />

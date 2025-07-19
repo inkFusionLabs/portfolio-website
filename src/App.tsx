@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import MiniPlayer from './components/MiniPlayer'
+import ErrorBoundary from './components/ErrorBoundary'
 import Dashboard from './pages/Dashboard'
 import Playlists from './pages/Playlists'
 import Discovery from './pages/Discovery'
@@ -25,13 +26,19 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/playlists" element={<Playlists />} />
               <Route path="/discovery" element={<Discovery />} />
-              <Route path="/player" element={<Player />} />
+              <Route path="/player" element={
+                <ErrorBoundary>
+                  <Player />
+                </ErrorBoundary>
+              } />
               <Route path="/library" element={<Library />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/spotify-callback" element={<SpotifyCallback />} />
             </Routes>
           </div>
-          <MiniPlayer />
+          <ErrorBoundary>
+            <MiniPlayer />
+          </ErrorBoundary>
         </main>
       </div>
     </MusicProvider>

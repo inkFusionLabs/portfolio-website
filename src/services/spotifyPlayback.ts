@@ -87,6 +87,7 @@ class SpotifyPlaybackService {
   private isSafari = false;
   private useRestAPI = false;
   private pollingInterval: number | null = null;
+  private lastLoggedTrack: string | null = null;
 
   constructor() {
     this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -175,7 +176,15 @@ class SpotifyPlaybackService {
 
       // Playback status updates
       this.player.addListener('player_state_changed', (state) => {
-        console.log('Playback state changed:', state);
+        if (state && state.track_window?.current_track) {
+          console.log('Playback state changed:', {
+            track: state.track_window.current_track.name,
+            artist: state.track_window.current_track.artists[0]?.name,
+            position: state.position,
+            duration: state.duration,
+            paused: state.paused
+          });
+        }
         this.stateUpdateCallbacks.forEach(callback => callback(state));
       });
 
@@ -248,6 +257,20 @@ class SpotifyPlaybackService {
     this.pollingInterval = window.setInterval(async () => {
       try {
         const state = await this.getCurrentState();
+        if (state && state.track_window?.current_track) {
+          // Only log significant state changes, not every poll
+          const currentTrack = state.track_window.current_track;
+          if (this.lastLoggedTrack !== currentTrack.id) {
+            console.log('Playback state updated:', {
+              track: currentTrack.name,
+              artist: currentTrack.artists[0]?.name,
+              position: state.position,
+              duration: state.duration,
+              paused: state.paused
+            });
+            this.lastLoggedTrack = currentTrack.id;
+          }
+        }
         this.stateUpdateCallbacks.forEach(callback => callback(state));
       } catch (error) {
         console.error('Error polling playback state:', error);
