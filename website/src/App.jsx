@@ -25,6 +25,7 @@ import LiveStats from './components/LiveStats'
 import ThemeCustomizer from './components/ThemeCustomizer'
 import Accomplishments from './components/Accomplishments'
 import UpdateNotification from './components/UpdateNotification'
+import LiveGitHubStats from './components/LiveGitHubStats'
 import Callback from './pages/Callback'
 import CallbackDemo from './pages/CallbackDemo'
 
@@ -33,6 +34,7 @@ function App() {
     <Router>
       <div className="App">
         <UpdateNotification />
+        <LiveGitHubStats />
         <EnhancedAnimations />
         <Navbar />
         <Routes>

@@ -20,19 +20,21 @@ class StatisticsTracker {
     if (this.isInitialized) return
 
     try {
+      // Load cached stats first
+      this.loadCachedStats()
+      
       // Fetch initial GitHub stats
       await this.updateGitHubStats()
-      
-      // Load cached stats from localStorage
-      this.loadCachedStats()
       
       // Start periodic updates
       this.startPeriodicUpdates()
       
       this.isInitialized = true
-      console.log('Statistics tracker initialized')
+      console.log('Statistics tracker initialized successfully')
     } catch (error) {
       console.error('Failed to initialize statistics tracker:', error)
+      // Even if initialization fails, we can still work with cached data
+      this.isInitialized = true
     }
   }
 
