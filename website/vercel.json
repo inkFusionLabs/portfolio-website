@@ -8,6 +8,10 @@
       "destination": "/legal.html"
     },
     {
+      "source": "/spotify-callback",
+      "destination": "/spotify-callback.html"
+    },
+    {
       "source": "/callback",
       "destination": "/index.html"
     },
@@ -61,7 +65,7 @@
     "VITE_TWITTER_URL": "https://twitter.com/omnifusionmusic",
     "VITE_EMAIL": "inkfusionlabs@icloud.com",
     "VITE_SUPPORT_EMAIL": "inkfusionlabs@icloud.com",
-    "VITE_CALLBACK_URL": "https://omnifusionmusic.com/callback"
+    "VITE_CALLBACK_URL": "https://omnifusionmusic.com/spotify-callback"
   },
   "redirects": [
     {
