@@ -1,5 +1,5 @@
 import React from 'react'
-import { Search, Play, List, Share2, Zap, Shield, Smartphone, Music } from 'lucide-react'
+import { Search, Play, List, Share2, Zap, Shield, Smartphone, Music, Sparkles } from 'lucide-react'
 
 const Features = () => {
   const features = [
@@ -54,29 +54,33 @@ const Features = () => {
     <section id="features" className="py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center px-4 py-2 glass rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-yellow-400 mr-2" />
+            <span className="text-sm font-medium">Powerful Features</span>
+          </div>
+          <h2 className="text-5xl md:text-6xl font-black text-white mb-8">
             Everything You Need in
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> One Place</span>
+            <span className="gradient-text"> One Place</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
             OmniFusion Music brings together all your favorite streaming services 
             with powerful features designed for music lovers.
           </p>
         </div>
 
         {/* Supported Services */}
-        <div className="mb-20">
-          <h3 className="text-2xl font-bold text-white text-center mb-8">Supported Services</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="mb-24">
+          <h3 className="text-3xl font-bold text-white text-center mb-12">Supported Services</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {services.map((service, index) => (
-              <div key={index} className="feature-card text-center group">
-                <div className="text-4xl mb-3">{service.icon}</div>
-                <h4 className="font-semibold text-white group-hover:text-blue-400 transition-colors">
+              <div key={index} className="feature-card text-center group hover:scale-110 transition-all duration-500">
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{service.icon}</div>
+                <h4 className="font-bold text-white group-hover:gradient-text transition-all duration-300">
                   {service.name}
                 </h4>
                 <div 
-                  className="w-8 h-1 mx-auto mt-2 rounded-full transition-all duration-300 group-hover:w-12"
+                  className="w-8 h-1.5 mx-auto mt-3 rounded-full transition-all duration-500 group-hover:w-16 group-hover:h-2"
                   style={{ backgroundColor: service.color }}
                 ></div>
               </div>
@@ -85,14 +89,14 @@ const Features = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {features.map((feature, index) => (
-            <div key={index} className="feature-card group">
-              <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform duration-300`}>
+            <div key={index} className="feature-card group hover:scale-105 transition-all duration-500">
+              <div className={`w-20 h-20 rounded-3xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-white mb-8 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-2xl`}>
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">{feature.title}</h3>
-              <p className="text-gray-300 leading-relaxed">{feature.description}</p>
+              <h3 className="text-2xl font-bold text-white mb-6 group-hover:gradient-text transition-all duration-300">{feature.title}</h3>
+              <p className="text-gray-200 leading-relaxed text-lg">{feature.description}</p>
             </div>
           ))}
         </div>

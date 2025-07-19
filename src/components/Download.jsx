@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Download, Monitor, Apple, Terminal, Check, Star, Users, Code } from 'lucide-react'
+import { Download, Monitor, Apple, Terminal, Check, Star, Users, Code, Sparkles } from 'lucide-react'
 
 const DownloadSection = () => {
   const [selectedPlatform, setSelectedPlatform] = useState('windows')
@@ -50,12 +50,16 @@ const DownloadSection = () => {
     <section id="download" className="py-20 bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center px-4 py-2 glass rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-yellow-400 mr-2" />
+            <span className="text-sm font-medium">Ready to Download</span>
+          </div>
+          <h2 className="text-5xl md:text-6xl font-black text-white mb-8">
             Download
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> OmniFusion Music</span>
+            <span className="gradient-text"> OmniFusion Music</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
             Get started with the universal music command center. Free, open-source, and available on all major platforms.
           </p>
         </div>
