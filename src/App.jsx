@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import DevelopmentStatus from './components/DevelopmentStatus'
 import Features from './components/Features'
 import InteractiveDemo from './components/InteractiveDemo'
 import SocialProof from './components/SocialProof'
@@ -16,13 +17,14 @@ import EnhancedAnimations from './components/EnhancedAnimations'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-900">
+      <div className="App">
         <EnhancedAnimations />
         <Navbar />
         <Routes>
           <Route path="/" element={
             <>
               <Hero />
+              <DevelopmentStatus />
               <Features />
               <InteractiveDemo />
               <ScreenshotsGallery />
