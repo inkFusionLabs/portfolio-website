@@ -1,197 +1,137 @@
-# OmniFusion Music Website
+# 🎵 OmniFusion Music
 
-A modern, responsive website for OmniFusion Music - the universal music command center.
+A universal music command center that brings all your music services together in one beautiful, cross-platform desktop application.
 
-## 🚀 Quick Deploy to Vercel
+## ✨ Features
 
-### Option 1: Deploy with Vercel CLI (Recommended)
+- **Universal Music Hub**: Connect and manage multiple music services from one interface
+- **Spotify Integration**: Full Spotify API integration with OAuth authentication
+- **Cross-Platform**: Built with Tauri for Windows, macOS, and Linux
+- **Modern UI**: Beautiful glass morphism design with dark theme
+- **Real-time Playback**: Control music playback across connected services
+- **Smart Search**: Search across all your connected music services
+- **Playlist Management**: View and manage playlists from different platforms
 
-1. **Install Vercel CLI** (if not already installed):
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ and npm
+- Rust (for Tauri development)
+- Spotify Developer Account (for Spotify integration)
+
+### Installation
+
+1. **Clone the repository**
    ```bash
-   npm install -g vercel
+   git clone https://github.com/yourusername/omnifusion-music.git
+   cd omnifusion-music
    ```
 
-2. **Login to Vercel**:
-   ```bash
-   vercel login
-   ```
-
-3. **Deploy from the website directory**:
-   ```bash
-   cd website
-   ./deploy-vercel.sh
-   ```
-
-### Option 2: Deploy from GitHub
-
-1. **Push your code to GitHub**:
-   ```bash
-   cd website
-   git init
-   git add .
-   git commit -m "Initial website commit"
-   git branch -M main
-   git remote add origin https://github.com/yourusername/OmniFusionMusic.git
-   git push -u origin main
-   ```
-
-2. **Connect to Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Sign up/Login with your GitHub account
-   - Click "New Project"
-   - Import your GitHub repository
-   - Select the `website` folder as the root directory
-   - Click "Deploy"
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React 18 + Vite
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Routing**: React Router DOM
-- **Deployment**: Vercel
-
-## 📦 Local Development
-
-1. **Install dependencies**:
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-2. **Start development server**:
+3. **Set up Spotify API** (see [Spotify Setup Guide](./SPOTIFY_SETUP.md))
+   - Create a Spotify Developer app
+   - Add your credentials to `.env` file
+
+4. **Start development**
    ```bash
-   npm run dev
+   npm run tauri dev
    ```
 
-3. **Build for production**:
-   ```bash
-   npm run build
-   ```
+## 🔐 Spotify Authentication
 
-## 🎨 Features
+The app now features a **simplified, error-free Spotify authentication process**:
 
-- **Modern Design**: Glassmorphism UI with beautiful gradients and animations
-- **Responsive**: Works perfectly on desktop, tablet, and mobile devices
-- **Fast**: Built with Vite and React for optimal performance
-- **SEO Optimized**: Proper meta tags, Open Graph, and structured data
-- **Download Section**: Platform-specific download buttons with version info
-- **Newsletter Signup**: Email collection for updates and announcements
+### ✅ What's New
+- **One-click connection**: Click "Connect Spotify" and you're done
+- **Automatic browser opening**: No more broken URLs or manual copying
+- **Manual fallback**: If the browser doesn't open, copy the URL manually
+- **Clear error messages**: Know exactly what went wrong and how to fix it
+- **Secure OAuth flow**: Uses proper state parameters and localhost redirects
+
+### 🔄 How It Works
+1. **Click Connect**: Opens Spotify's official authorization page
+2. **Authorize**: Log in to Spotify and grant permissions  
+3. **Automatic Redirect**: You're redirected back to the app automatically
+4. **Manual Fallback**: If needed, manually copy the authorization code
+
+### 🛠️ Troubleshooting
+- **"Client ID not configured"**: Check your `.env` file
+- **"Invalid redirect URI"**: Ensure `http://localhost:1420/spotify-callback` is in your Spotify app settings
+- **Browser doesn't open**: Use the manual URL copy feature
+- **"Invalid authorization code"**: Generate a new authorization URL
 
 ## 📁 Project Structure
 
 ```
-website/
+OmniFusionMusic/
 ├── src/
-│   ├── components/     # React components
-│   │   ├── Hero.jsx    # Hero section
-│   │   ├── Features.jsx # Features showcase
-│   │   ├── Download.jsx # Download section
-│   │   ├── Footer.jsx  # Footer component
-│   │   └── Navbar.jsx  # Navigation
-│   ├── App.jsx         # Main app component
-│   ├── main.jsx        # App entry point
-│   └── index.css       # Global styles
-├── public/             # Static assets
-├── dist/               # Build output
-├── vercel.json         # Vercel configuration
-├── tailwind.config.js  # Tailwind CSS config
-├── postcss.config.js   # PostCSS configuration
-└── package.json        # Dependencies
+│   ├── components/          # Reusable UI components
+│   ├── pages/              # Main application pages
+│   ├── services/           # API services (Spotify, etc.)
+│   ├── contexts/           # React contexts for state management
+│   └── main.tsx           # Application entry point
+├── src-tauri/             # Tauri backend (Rust)
+├── website/               # Marketing website
+└── docs/                  # Documentation
 ```
 
-## 🔧 Configuration
+## 🎯 Roadmap
 
-### Environment Variables
-Create a `.env` file for:
-```env
-VITE_APP_NAME=OmniFusion Music
-VITE_APP_VERSION=1.0.0
-VITE_GITHUB_URL=https://github.com/your-repo/OmniFusionMusic
-VITE_DISCORD_URL=https://discord.gg/omnifusion
-```
+### Phase 1: Core Features ✅
+- [x] Spotify integration with OAuth
+- [x] Modern UI with glass morphism
+- [x] Cross-platform desktop app
+- [x] Music playback controls
+- [x] Playlist management
 
-### Custom Domain Setup
-1. Add your domain in Vercel dashboard
-2. Configure DNS records:
-   ```
-   Type: A
-   Name: @
-   Value: 76.76.19.19
-   
-   Type: CNAME
-   Name: www
-   Value: cname.vercel-dns.com
-   ```
+### Phase 2: Enhanced Features 🚧
+- [ ] Apple Music integration
+- [ ] YouTube Music integration
+- [ ] Advanced search and filters
+- [ ] AI-powered recommendations
+- [ ] Collaborative playlists
 
-## 📊 Analytics
+### Phase 3: Advanced Features 📋
+- [ ] Mobile app companion
+- [ ] Social features
+- [ ] Music analytics
+- [ ] Custom themes
+- [ ] Plugin system
 
-### Google Analytics
-Add to `index.html`:
-```html
-<script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'GA_MEASUREMENT_ID');
-</script>
-```
+## 🤝 Contributing
 
-## 🎯 Customization
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
 
-### Updating Download Links
-Edit `src/components/Download.jsx` to update:
-- Download URLs for each platform
-- Version numbers
-- File sizes
-- System requirements
+### Development Setup
 
-### Changing Colors
-Modify the gradient colors in:
-- `src/index.css` (button styles)
-- `tailwind.config.js` (theme colors)
-- Individual components
-
-## 🚨 Troubleshooting
-
-### Build Issues
-1. Ensure all dependencies are installed: `npm install`
-2. Check for icon import issues (use valid Lucide React icons)
-3. Verify Tailwind CSS configuration
-
-### Deployment Issues
-1. Check Vercel build logs
-2. Ensure `vercel.json` is properly configured
-3. Verify environment variables are set
-
-## 📈 Performance
-
-The website is optimized with:
-- ✅ Vite for fast builds
-- ✅ Tailwind CSS for minimal CSS
-- ✅ React 18 with concurrent features
-- ✅ Proper caching headers
-- ✅ Image optimization
-- ✅ Code splitting
-
-## 🔄 Continuous Deployment
-
-Once connected to GitHub, Vercel will automatically:
-- Deploy on every push to `main` branch
-- Create preview deployments for pull requests
-- Rollback to previous versions if needed
-
-## 📞 Support
-
-For website issues or questions:
-- Create an issue on GitHub
-- Check the deployment logs in Vercel dashboard
-- Review the build output locally
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## 📄 License
 
-This website is part of the OmniFusion Music project and follows the same license terms.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Tauri](https://tauri.app/) for the cross-platform framework
+- [React](https://reactjs.org/) for the UI library
+- [Tailwind CSS](https://tailwindcss.com/) for styling
+- [Spotify Web API](https://developer.spotify.com/documentation/web-api/) for music integration
+
+## 📞 Support
+
+- 📧 Email: support@omnifusionmusic.com
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/omnifusion-music/issues)
+- 📖 Documentation: [Wiki](https://github.com/yourusername/omnifusion-music/wiki)
 
 ---
 
-**Ready to deploy?** Run `./deploy-vercel.sh` from the website directory! 
+**Made with ❤️ by the OmniFusion Music Team** 

@@ -289,43 +289,19 @@ export function MusicProvider({ children }: { children: ReactNode }) {
 
   // Load user data on mount
   useEffect(() => {
-    // Initialize Spotify service
-    const initSpotify = async () => {
-      const isConnected = await spotifyService.initialize()
-      if (isConnected) {
-        dispatch({ type: 'SET_CONNECTED_SERVICES', payload: ['spotify'] })
-        
-        // Load user data
-        try {
-          const userProfile = await spotifyService.getCurrentUser()
-          if (userProfile) {
-            dispatch({ type: 'SET_USER_PROFILE', payload: userProfile })
-          }
-          
-          // Load user data
-          await loadUserData()
-        } catch (error) {
-          console.error('Failed to load user data:', error)
-        }
-      }
+    let mounted = true
+    
+    const initializeData = async () => {
+      if (!mounted) return
+      await loadUserData()
     }
-
-    initSpotify()
-
-    // Listen for Spotify connection events
-    const handleSpotifyConnected = () => {
-      console.log('🎵 Spotify connected event received')
-      dispatch({ type: 'SET_CONNECTED_SERVICES', payload: ['spotify'] })
-      // Reload the page to refresh the connection state
-      window.location.reload()
-    }
-
-    window.addEventListener('spotifyConnected', handleSpotifyConnected)
-
+    
+    initializeData()
+    
     return () => {
-      window.removeEventListener('spotifyConnected', handleSpotifyConnected)
+      mounted = false
     }
-  }, [])
+  }, [loadUserData])
 
   // Listen for Spotify connection events
   useEffect(() => {
