@@ -6,6 +6,7 @@ on:
   schedule:
     # Runs every day at 00:00 UTC
     - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggering
 
 permissions:
   contents: write
@@ -21,6 +22,16 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
       
+    - name: Test README exists
+      run: |
+        if [ -f "README.md" ]; then
+          echo "✅ README.md exists"
+          echo "📄 README size: $(wc -l < README.md) lines"
+        else
+          echo "❌ README.md not found"
+          exit 1
+        fi
+      
     - name: Update README with dynamic badges
       run: |
         # This is a placeholder for future badge updates
@@ -33,8 +44,10 @@ jobs:
         git add README.md
         if git diff --staged --quiet; then
           echo "has_changes=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ No changes detected in README.md"
         else
           echo "has_changes=true" >> $GITHUB_OUTPUT
+          echo "📝 Changes detected in README.md"
         fi
         
     - name: Commit and push changes
@@ -43,4 +56,10 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git commit -m "Update README badges [skip ci]"
-        git push 
+        git push
+        echo "✅ Changes committed and pushed successfully"
+        
+    - name: No changes to commit
+      if: steps.check_changes.outputs.has_changes == 'false'
+      run: |
+        echo "ℹ️ No changes to commit - README is up to date" 
