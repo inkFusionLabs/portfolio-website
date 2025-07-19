@@ -1,8 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd website && npm run build",
-  "outputDirectory": "website/dist",
-  "installCommand": "cd website && npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/legal",

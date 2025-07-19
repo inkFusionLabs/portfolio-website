@@ -1,0 +1,10 @@
+/Users/inkfusionlabs-/Library/Mobile Documents/com~apple~CloudDocs/Cursor/OmniFusionMusic/src-tauri/target/debug/deps/weezl-8ff4561d440764b4.d: /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/lib.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/decode.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/encode.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/error.rs
+
+/Users/inkfusionlabs-/Library/Mobile Documents/com~apple~CloudDocs/Cursor/OmniFusionMusic/src-tauri/target/debug/deps/libweezl-8ff4561d440764b4.rlib: /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/lib.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/decode.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/encode.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/error.rs
+
+/Users/inkfusionlabs-/Library/Mobile Documents/com~apple~CloudDocs/Cursor/OmniFusionMusic/src-tauri/target/debug/deps/libweezl-8ff4561d440764b4.rmeta: /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/lib.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/decode.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/encode.rs /Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/error.rs
+
+/Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/lib.rs:
+/Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/decode.rs:
+/Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/encode.rs:
+/Users/inkfusionlabs-/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/weezl-0.1.10/src/error.rs:
