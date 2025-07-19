@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 import Sidebar from './components/Sidebar'
+import MiniPlayer from './components/MiniPlayer'
 import Dashboard from './pages/Dashboard'
 import Playlists from './pages/Playlists'
 import Discovery from './pages/Discovery'
@@ -30,6 +31,7 @@ function App() {
               <Route path="/spotify-callback" element={<SpotifyCallback />} />
             </Routes>
           </div>
+          <MiniPlayer />
         </main>
       </div>
     </MusicProvider>

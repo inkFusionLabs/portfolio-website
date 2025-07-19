@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react'
-import { Plus, Search, Filter, Play, Heart, Share2, Loader, Music } from 'lucide-react'
+import { Plus, Search, Filter, Play, Heart, Share2, Loader, Music, RefreshCw, Shuffle } from 'lucide-react'
 import { useMusic } from '../contexts/MusicContext'
 
 export default function Playlists() {
-  const { state, playTrack } = useMusic()
+  const { state, playTrack, loadUserData } = useMusic()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedService, setSelectedService] = useState('all')
 
@@ -30,6 +30,22 @@ export default function Playlists() {
   const handlePlaylistClick = (playlist: any) => {
     // In a real implementation, you would load the playlist tracks
     console.log('Playing playlist:', playlist.name)
+  }
+
+  const handlePlayPlaylist = (playlist: any) => {
+    // Play the first track of the playlist
+    if (playlist.tracks.length > 0) {
+      playTrack(playlist.tracks[0])
+    } else {
+      console.log('Playlist is empty:', playlist.name)
+    }
+  }
+
+  const handleShufflePlaylist = (playlist: any) => {
+    if (playlist.tracks.length > 0) {
+      const shuffled = [...playlist.tracks].sort(() => Math.random() - 0.5)
+      playTrack(shuffled[0])
+    }
   }
 
   const formatDuration = (seconds: number) => {
@@ -127,6 +143,16 @@ export default function Playlists() {
           <button className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg transition-colors">
             <Filter className="w-5 h-5 text-gray-400" />
           </button>
+          <button 
+            onClick={async () => {
+              await loadUserData()
+            }}
+            disabled={state.isLoading}
+            className="p-3 bg-harmony-500/20 hover:bg-harmony-500/30 rounded-lg transition-colors disabled:opacity-50"
+            title="Refresh playlists"
+          >
+            <RefreshCw className={`w-5 h-5 text-harmony-400 ${state.isLoading ? 'animate-spin' : ''}`} />
+          </button>
         </div>
 
         {state.isLoading ? (
@@ -165,13 +191,21 @@ export default function Playlists() {
                       className="p-2 hover:bg-gray-700/50 rounded-lg transition-colors"
                       onClick={(e) => {
                         e.stopPropagation()
-                        // Play first track of playlist
-                        if (playlist.tracks.length > 0) {
-                          playTrack(playlist.tracks[0])
-                        }
+                        handlePlayPlaylist(playlist)
                       }}
+                      title="Play playlist"
                     >
                       <Play className="w-4 h-4 text-gray-400" />
+                    </button>
+                    <button 
+                      className="p-2 hover:bg-gray-700/50 rounded-lg transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleShufflePlaylist(playlist)
+                      }}
+                      title="Shuffle playlist"
+                    >
+                      <Shuffle className="w-4 h-4 text-gray-400" />
                     </button>
                     <button className="p-2 hover:bg-gray-700/50 rounded-lg transition-colors">
                       <Heart className="w-4 h-4 text-gray-400" />

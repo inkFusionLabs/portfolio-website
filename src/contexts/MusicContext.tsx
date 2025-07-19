@@ -1,6 +1,49 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react'
 import { spotifyService } from '../services/spotify'
-import { spotifyPlaybackService, type SpotifyPlaybackState } from '../services/spotifyPlayback'
+import { spotifyPlaybackService } from '../services/spotifyPlayback'
+
+// Define SpotifyPlaybackState interface locally
+interface SpotifyPlaybackState {
+  context: {
+    uri: string;
+    metadata: any;
+  };
+  disallows: {
+    pausing: boolean;
+    peeking_next: boolean;
+    peeking_prev: boolean;
+    resuming: boolean;
+    seeking: boolean;
+    skipping_next: boolean;
+    skipping_prev: boolean;
+  };
+  duration: number;
+  paused: boolean;
+  position: number;
+  repeat_mode: number;
+  shuffle: boolean;
+  track_window: {
+    current_track: {
+      id: string;
+      uri: string;
+      type: string;
+      media_type: string;
+      name: string;
+      is_playable: boolean;
+      album: {
+        uri: string;
+        name: string;
+        images: Array<{ url: string; height: number; width: number }>;
+      };
+      artists: Array<{
+        uri: string;
+        name: string;
+      }>;
+    };
+    previous_tracks: any[];
+    next_tracks: any[];
+  };
+}
 
 interface Track {
   id: string
@@ -139,6 +182,20 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   // Load user data on mount
   useEffect(() => {
     loadUserData()
+  }, [])
+
+  // Listen for Spotify connection events
+  useEffect(() => {
+    const handleSpotifyConnected = () => {
+      console.log('Spotify connected event received - reloading user data')
+      loadUserData()
+    }
+    
+    window.addEventListener('spotifyConnected', handleSpotifyConnected)
+    
+    return () => {
+      window.removeEventListener('spotifyConnected', handleSpotifyConnected)
+    }
   }, [])
 
 

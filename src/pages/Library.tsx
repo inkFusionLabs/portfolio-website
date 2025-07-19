@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Search, Filter, Grid, List, Heart, Clock, Music, Star, Play, Loader } from 'lucide-react'
+import { Search, Filter, Grid, List, Heart, Clock, Music, Star, Play, Loader, RefreshCw, Shuffle } from 'lucide-react'
 import { useMusic } from '../contexts/MusicContext'
 import { spotifyService } from '../services/spotify'
 
@@ -17,7 +17,7 @@ interface LibraryTrack {
 }
 
 export default function Library() {
-  const { state, playTrack } = useMusic()
+  const { state, playTrack, loadUserData } = useMusic()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [searchQuery, setSearchQuery] = useState('')
   const [libraryTracks, setLibraryTracks] = useState<LibraryTrack[]>([])
@@ -93,6 +93,24 @@ export default function Library() {
     return filtered
   }, [libraryTracks, searchQuery, selectedFilter])
 
+  const handlePlayAll = () => {
+    if (filteredTracks.length > 0) {
+      // Play the first track and add the rest to queue
+      playTrack(filteredTracks[0])
+      filteredTracks.slice(1).forEach(track => {
+        // Add to queue functionality would be implemented here
+        console.log('Adding to queue:', track.title)
+      })
+    }
+  }
+
+  const handleShufflePlay = () => {
+    if (filteredTracks.length > 0) {
+      const shuffled = [...filteredTracks].sort(() => Math.random() - 0.5)
+      playTrack(shuffled[0])
+    }
+  }
+
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = seconds % 60
@@ -120,6 +138,24 @@ export default function Library() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-white">Music Library</h1>
         <div className="flex items-center space-x-2">
+          {filteredTracks.length > 0 && (
+            <>
+              <button
+                onClick={handlePlayAll}
+                className="px-4 py-2 bg-harmony-500 hover:bg-harmony-600 text-white rounded-lg transition-colors flex items-center space-x-2"
+              >
+                <Play className="w-4 h-4" />
+                <span>Play All</span>
+              </button>
+              <button
+                onClick={handleShufflePlay}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center space-x-2"
+              >
+                <Shuffle className="w-4 h-4" />
+                <span>Shuffle</span>
+              </button>
+            </>
+          )}
           <button
             onClick={() => setViewMode('grid')}
             className={`p-2 rounded-lg transition-colors ${
@@ -164,6 +200,19 @@ export default function Library() {
           </select>
           <button className="p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg transition-colors">
             <Filter className="w-5 h-5 text-gray-400" />
+          </button>
+          <button 
+            onClick={async () => {
+              setIsLoading(true)
+              await loadUserData()
+              await loadLibraryTracks()
+              setIsLoading(false)
+            }}
+            disabled={isLoading}
+            className="p-3 bg-harmony-500/20 hover:bg-harmony-500/30 rounded-lg transition-colors disabled:opacity-50"
+            title="Refresh library data"
+          >
+            <RefreshCw className={`w-5 h-5 text-harmony-400 ${isLoading ? 'animate-spin' : ''}`} />
           </button>
         </div>
 

@@ -67,6 +67,16 @@ interface SpotifyTrack {
   }>;
 }
 
+interface SpotifyDevice {
+  id: string;
+  is_active: boolean;
+  is_private_session: boolean;
+  is_restricted: boolean;
+  name: string;
+  type: string;
+  volume_percent: number;
+}
+
 class SpotifyPlaybackService {
   private player: SpotifyPlayer | null = null;
   private deviceId: string | null = null;
@@ -74,9 +84,19 @@ class SpotifyPlaybackService {
   private isInitialized = false;
   private stateUpdateCallbacks: ((state: SpotifyPlaybackState | null) => void)[] = [];
   private errorCallbacks: ((error: string) => void)[] = [];
+  private isSafari = false;
+  private useRestAPI = false;
+  private pollingInterval: number | null = null;
 
   constructor() {
-    this.initializeSDK();
+    this.isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    this.useRestAPI = this.isSafari;
+    
+    if (this.isSafari) {
+      console.log('🦁 Safari detected - Using REST API fallback for playback control');
+    } else {
+      this.initializeSDK();
+    }
   }
 
   private initializeSDK(): void {
@@ -87,11 +107,13 @@ class SpotifyPlaybackService {
   }
 
   async initialize(accessToken: string): Promise<boolean> {
-    // Check if we're in Safari or if the SDK is not available
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (isSafari) {
-      console.warn('Spotify Web Playback SDK is not supported in Safari');
-      return false;
+    this.accessToken = accessToken;
+
+    if (this.useRestAPI) {
+      console.log('🎵 Using REST API mode for Safari compatibility');
+      // Start polling for playback state
+      this.startPolling();
+      return true;
     }
 
     if (!window.Spotify) {
@@ -122,8 +144,6 @@ class SpotifyPlaybackService {
         return false;
       }
     }
-
-    this.accessToken = accessToken;
 
     try {
       this.player = new window.Spotify.Player({
@@ -186,7 +206,86 @@ class SpotifyPlaybackService {
     }
   }
 
+  private async getActiveDevice(): Promise<string | null> {
+    if (!this.accessToken) return null;
+
+    try {
+      const response = await fetch('https://api.spotify.com/v1/me/player/devices', {
+        headers: {
+          'Authorization': `Bearer ${this.accessToken}`
+        }
+      });
+
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      const activeDevice = data.devices.find((device: SpotifyDevice) => device.is_active);
+      
+      if (activeDevice) {
+        this.deviceId = activeDevice.id;
+        return activeDevice.id;
+      }
+
+      // If no active device, use the first available device
+      if (data.devices.length > 0) {
+        this.deviceId = data.devices[0].id;
+        return data.devices[0].id;
+      }
+
+      return null;
+    } catch (error) {
+      console.error('Error getting active device:', error);
+      return null;
+    }
+  }
+
+  private startPolling(): void {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+    }
+
+    // Poll every 2 seconds for playback state
+    this.pollingInterval = window.setInterval(async () => {
+      try {
+        const state = await this.getCurrentState();
+        this.stateUpdateCallbacks.forEach(callback => callback(state));
+      } catch (error) {
+        console.error('Error polling playback state:', error);
+      }
+    }, 2000);
+  }
+
   async playTrack(spotifyUri: string): Promise<boolean> {
+    if (this.useRestAPI) {
+      const deviceId = await this.getActiveDevice();
+      if (!deviceId) {
+        console.error('No active device available');
+        return false;
+      }
+
+      try {
+        const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ uris: [spotifyUri] }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+
+        if (response.ok) {
+          console.log('Started playing track:', spotifyUri);
+          return true;
+        } else {
+          console.error('Failed to play track:', response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error playing track:', error);
+        return false;
+      }
+    }
+
     if (!this.deviceId || !this.accessToken) {
       console.error('No device ID or access token available');
       return false;
@@ -216,6 +315,36 @@ class SpotifyPlaybackService {
   }
 
   async playPlaylist(playlistUri: string): Promise<boolean> {
+    if (this.useRestAPI) {
+      const deviceId = await this.getActiveDevice();
+      if (!deviceId) {
+        console.error('No active device available');
+        return false;
+      }
+
+      try {
+        const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ context_uri: playlistUri }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+
+        if (response.ok) {
+          console.log('Started playing playlist:', playlistUri);
+          return true;
+        } else {
+          console.error('Failed to play playlist:', response.statusText);
+          return false;
+        }
+      } catch (error) {
+        console.error('Error playing playlist:', error);
+        return false;
+      }
+    }
+
     if (!this.deviceId || !this.accessToken) {
       console.error('No device ID or access token available');
       return false;
@@ -245,43 +374,207 @@ class SpotifyPlaybackService {
   }
 
   async pause(): Promise<void> {
+    if (this.useRestAPI) {
+      try {
+        await fetch('https://api.spotify.com/v1/me/player/pause', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+      } catch (error) {
+        console.error('Error pausing playback:', error);
+      }
+      return;
+    }
+
     if (this.player) {
       await this.player.pause();
     }
   }
 
   async resume(): Promise<void> {
+    if (this.useRestAPI) {
+      try {
+        await fetch('https://api.spotify.com/v1/me/player/play', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+      } catch (error) {
+        console.error('Error resuming playback:', error);
+      }
+      return;
+    }
+
     if (this.player) {
       await this.player.resume();
     }
   }
 
   async nextTrack(): Promise<void> {
+    if (this.useRestAPI) {
+      try {
+        await fetch('https://api.spotify.com/v1/me/player/next', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+      } catch (error) {
+        console.error('Error skipping to next track:', error);
+      }
+      return;
+    }
+
     if (this.player) {
       await this.player.nextTrack();
     }
   }
 
   async previousTrack(): Promise<void> {
+    if (this.useRestAPI) {
+      try {
+        await fetch('https://api.spotify.com/v1/me/player/previous', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+      } catch (error) {
+        console.error('Error skipping to previous track:', error);
+      }
+      return;
+    }
+
     if (this.player) {
       await this.player.previousTrack();
     }
   }
 
   async setVolume(volume: number): Promise<void> {
+    if (this.useRestAPI) {
+      try {
+        await fetch(`https://api.spotify.com/v1/me/player/volume?volume_percent=${Math.round(volume * 100)}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+      } catch (error) {
+        console.error('Error setting volume:', error);
+      }
+      return;
+    }
+
     if (this.player) {
       await this.player.setVolume(volume);
     }
   }
 
   async getVolume(): Promise<number> {
+    if (this.useRestAPI) {
+      try {
+        // For REST API mode, we'll get volume from the device list
+        const response = await fetch('https://api.spotify.com/v1/me/player/devices', {
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const activeDevice = data.devices.find((device: SpotifyDevice) => device.is_active);
+          return activeDevice?.volume_percent ? activeDevice.volume_percent / 100 : 0.5;
+        }
+        return 0.5;
+      } catch (error) {
+        console.error('Error getting volume:', error);
+        return 0.5;
+      }
+    }
+
     if (this.player) {
       return await this.player.getVolume();
     }
-    return 0;
+    return 0.5;
   }
 
   async getCurrentState(): Promise<SpotifyPlaybackState | null> {
+    if (this.useRestAPI) {
+      if (!this.accessToken) return null;
+
+      try {
+        const response = await fetch('https://api.spotify.com/v1/me/player', {
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+
+        if (!response.ok) return null;
+
+        const data = await response.json();
+        if (!data) return null;
+
+        // Convert REST API response to match Web Playback SDK format
+        return {
+          context: {
+            uri: data.context?.uri || '',
+            metadata: data.context?.metadata || {}
+          },
+          disallows: {
+            pausing: data.actions?.disallows?.includes('pausing') || false,
+            peeking_next: data.actions?.disallows?.includes('peeking_next') || false,
+            peeking_prev: data.actions?.disallows?.includes('peeking_prev') || false,
+            resuming: data.actions?.disallows?.includes('resuming') || false,
+            seeking: data.actions?.disallows?.includes('seeking') || false,
+            skipping_next: data.actions?.disallows?.includes('skipping_next') || false,
+            skipping_prev: data.actions?.disallows?.includes('skipping_prev') || false
+          },
+          duration: data.item?.duration_ms || 0,
+          paused: !data.is_playing,
+          position: data.progress_ms || 0,
+          repeat_mode: data.repeat_state === 'off' ? 0 : data.repeat_state === 'track' ? 1 : 2,
+          shuffle: data.shuffle_state || false,
+          track_window: {
+            current_track: data.item ? {
+              id: data.item.id,
+              uri: data.item.uri,
+              type: data.item.type,
+              media_type: data.item.type,
+              name: data.item.name,
+              is_playable: data.item.is_playable !== false,
+              album: {
+                uri: data.item.album.uri,
+                name: data.item.album.name,
+                images: data.item.album.images
+              },
+              artists: data.item.artists
+            } : {
+              id: '',
+              uri: '',
+              type: '',
+              media_type: '',
+              name: '',
+              is_playable: false,
+              album: {
+                uri: '',
+                name: '',
+                images: []
+              },
+              artists: []
+            },
+            previous_tracks: [],
+            next_tracks: []
+          }
+        };
+      } catch (error) {
+        console.error('Error getting current state:', error);
+        return null;
+      }
+    }
+
     if (this.player) {
       return await this.player.getCurrentState();
     }
@@ -289,25 +582,23 @@ class SpotifyPlaybackService {
   }
 
   async seekTo(position: number): Promise<void> {
-    if (!this.deviceId || !this.accessToken) {
-      console.error('No device ID or access token available');
+    if (this.useRestAPI) {
+      try {
+        await fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${Math.round(position)}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+        });
+      } catch (error) {
+        console.error('Error seeking to position:', error);
+      }
       return;
     }
 
-    try {
-      const response = await fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${position}&device_id=${this.deviceId}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`
-        }
-      });
-
-      if (!response.ok) {
-        console.error('Failed to seek:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error seeking:', error);
-    }
+    // Web Playback SDK doesn't have a direct seek method
+    // This would need to be implemented differently
+    console.warn('Seeking not supported in Web Playback SDK mode');
   }
 
   onStateUpdate(callback: (state: SpotifyPlaybackState | null) => void): void {
@@ -319,20 +610,32 @@ class SpotifyPlaybackService {
   }
 
   disconnect(): void {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+
     if (this.player) {
       this.player.disconnect();
-      this.player = null;
     }
+
+    this.player = null;
     this.deviceId = null;
     this.accessToken = null;
+    this.isInitialized = false;
     this.stateUpdateCallbacks = [];
     this.errorCallbacks = [];
+    
+    console.log('Spotify playback service disconnected');
   }
 
   isConnected(): boolean {
-    return this.player !== null && this.deviceId !== null;
+    return this.useRestAPI ? !!this.accessToken : !!this.player;
+  }
+
+  isSafariMode(): boolean {
+    return this.useRestAPI;
   }
 }
 
-export const spotifyPlaybackService = new SpotifyPlaybackService();
-export type { SpotifyPlaybackState, SpotifyTrack }; 
+export const spotifyPlaybackService = new SpotifyPlaybackService() 

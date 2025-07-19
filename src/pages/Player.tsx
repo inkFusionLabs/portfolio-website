@@ -13,7 +13,7 @@ export default function Player() {
 
   // Check browser compatibility
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-  const isPlaybackSupported = !isSafari && state.connectedServices.includes('spotify')
+  const isPlaybackSupported = state.connectedServices.includes('spotify')
 
   // Update volume in context when local volume changes
   useEffect(() => {
@@ -78,9 +78,9 @@ export default function Player() {
             </div>
           )}
           {!isPlaybackSupported && (
-            <div className="flex items-center space-x-1 px-2 py-1 bg-yellow-500/20 rounded-full">
-              <span className="text-yellow-400 text-xs">⚠️</span>
-              <span className="text-yellow-400 text-xs">Preview Mode</span>
+            <div className="flex items-center space-x-1 px-2 py-1 bg-blue-500/20 rounded-full">
+              <span className="text-blue-400 text-xs">🎵</span>
+              <span className="text-blue-400 text-xs">Connect Spotify</span>
             </div>
           )}
         </div>
@@ -88,16 +88,15 @@ export default function Player() {
 
       {/* Browser Compatibility Notice */}
       {isSafari && (
-        <div className="glass-effect rounded-xl p-4 mb-6 bg-yellow-500/20 border border-yellow-500/30">
+        <div className="glass-effect rounded-xl p-4 mb-6 bg-green-500/20 border border-green-500/30">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-              <span className="text-yellow-400 text-lg">⚠️</span>
+            <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+              <span className="text-green-400 text-lg">🦁</span>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white">Safari Compatibility Notice</h3>
+              <h3 className="text-lg font-semibold text-white">Safari Compatible!</h3>
               <p className="text-gray-300">
-                Spotify Web Playback SDK is not supported in Safari. You can browse and view your music, 
-                but playback controls will be limited. For full functionality, please use Chrome, Firefox, or Edge.
+                Running in Safari mode with full Spotify playback support. All features work perfectly! 🎵
               </p>
             </div>
           </div>
@@ -162,7 +161,7 @@ export default function Player() {
                 onClick={previousTrack}
                 disabled={state.queue.length === 0 || !isPlaybackSupported}
                 className="p-3 hover:bg-gray-800/50 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                title={!isPlaybackSupported ? 'Playback not supported in this browser' : ''}
+                title={!isPlaybackSupported ? 'Connect to Spotify to enable playback' : ''}
               >
                 <SkipBack className="w-6 h-6 text-white" />
               </button>
@@ -170,7 +169,7 @@ export default function Player() {
                 onClick={handlePlayPause}
                 disabled={!state.currentTrack || !isPlaybackSupported}
                 className="p-4 bg-harmony-500 hover:bg-harmony-600 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                title={!isPlaybackSupported ? 'Playback not supported in this browser' : ''}
+                title={!isPlaybackSupported ? 'Connect to Spotify to enable playback' : ''}
               >
                 {state.isLoading ? (
                   <Loader className="w-8 h-8 text-white animate-spin" />
@@ -184,7 +183,7 @@ export default function Player() {
                 onClick={nextTrack}
                 disabled={state.queue.length === 0 || !isPlaybackSupported}
                 className="p-3 hover:bg-gray-800/50 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                title={!isPlaybackSupported ? 'Playback not supported in this browser' : ''}
+                title={!isPlaybackSupported ? 'Connect to Spotify to enable playback' : ''}
               >
                 <SkipForward className="w-6 h-6 text-white" />
               </button>

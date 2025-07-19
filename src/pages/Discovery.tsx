@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Sparkles, Heart, Play, Plus, Loader, TrendingUp, Clock, Music } from 'lucide-react'
+import { Sparkles, Heart, Play, Plus, Loader, TrendingUp, Clock, Music, Shuffle } from 'lucide-react'
 import { useMusic } from '../contexts/MusicContext'
 import { spotifyService } from '../services/spotify'
 
@@ -78,6 +78,19 @@ export default function Discovery() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
+  const handlePlayAll = () => {
+    if (recommendations.length > 0) {
+      playTrack(recommendations[0])
+    }
+  }
+
+  const handleShufflePlay = () => {
+    if (recommendations.length > 0) {
+      const shuffled = [...recommendations].sort(() => Math.random() - 0.5)
+      playTrack(shuffled[0])
+    }
+  }
+
   const getTabIcon = (tab: string) => {
     switch (tab) {
       case 'recommendations':
@@ -101,6 +114,24 @@ export default function Discovery() {
           <p className="text-gray-400">AI-powered recommendations and trending music</p>
         </div>
         <div className="flex items-center space-x-2">
+          {recommendations.length > 0 && (
+            <>
+              <button
+                onClick={handlePlayAll}
+                className="px-4 py-2 bg-harmony-500 hover:bg-harmony-600 text-white rounded-lg transition-colors flex items-center space-x-2"
+              >
+                <Play className="w-4 h-4" />
+                <span>Play All</span>
+              </button>
+              <button
+                onClick={handleShufflePlay}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center space-x-2"
+              >
+                <Shuffle className="w-4 h-4" />
+                <span>Shuffle</span>
+              </button>
+            </>
+          )}
           <Sparkles className="w-5 h-5 text-harmony-400" />
           <span className="text-harmony-400 font-medium">AI Powered</span>
         </div>

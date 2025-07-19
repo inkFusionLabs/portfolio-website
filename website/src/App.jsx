@@ -19,6 +19,9 @@ import CommunityFeatures from './components/CommunityFeatures'
 import SponsorshipIntegration from './components/SponsorshipIntegration'
 import InteractiveElements from './components/InteractiveElements'
 import GitHubStatsTest from './components/GitHubStatsTest'
+import InteractiveMusicPlayer from './components/InteractiveMusicPlayer'
+import LiveStats from './components/LiveStats'
+import ThemeCustomizer from './components/ThemeCustomizer'
 import Callback from './pages/Callback'
 import CallbackDemo from './pages/CallbackDemo'
 
@@ -42,6 +45,9 @@ function App() {
               <CommunityFeatures />
               <SponsorshipIntegration />
               <InteractiveElements />
+              <InteractiveMusicPlayer />
+              <LiveStats />
+              <ThemeCustomizer />
               <Roadmap />
               <Changelog />
               <FAQ />
