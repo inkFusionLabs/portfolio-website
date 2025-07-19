@@ -7,13 +7,19 @@ on:
     # Runs every day at 00:00 UTC
     - cron: '0 0 * * *'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-readme:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Update README with dynamic badges
       run: |
@@ -21,10 +27,20 @@ jobs:
         # You can add scripts here to dynamically update badges
         echo "README badges updated"
         
+    - name: Check for changes
+      id: check_changes
+      run: |
+        git add README.md
+        if git diff --staged --quiet; then
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        fi
+        
     - name: Commit and push changes
+      if: steps.check_changes.outputs.has_changes == 'true'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add README.md
-        git diff --quiet && git diff --staged --quiet || git commit -m "Update README badges"
+        git commit -m "Update README badges [skip ci]"
         git push 
