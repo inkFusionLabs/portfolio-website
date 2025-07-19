@@ -19,6 +19,7 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
+            <a href="#demo" className="text-gray-300 hover:text-white transition-colors">Demo</a>
             <a href="#download" className="text-gray-300 hover:text-white transition-colors">Download</a>
             <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
             <button className="btn-primary">Download Now</button>
@@ -40,6 +41,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 glass rounded-lg mt-2">
               <a href="#features" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Features</a>
+              <a href="#demo" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Demo</a>
               <a href="#download" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">Download</a>
               <a href="#about" className="block px-3 py-2 text-gray-300 hover:text-white transition-colors">About</a>
               <button className="w-full mt-4 btn-primary">Download Now</button>
