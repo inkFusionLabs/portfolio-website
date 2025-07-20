@@ -9,42 +9,8 @@
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #000;
     min-height: 100vh;
     color: white;
-  }
-}
-
-@layer components {
-  .btn {
-    @apply px-8 py-4 rounded-full text-base font-semibold transition-all duration-300 cursor-pointer inline-flex items-center gap-2;
-  }
-
-  .btn-primary {
-    @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/40 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/60;
-  }
-
-  .btn-secondary {
-    @apply bg-white/10 text-white border-2 border-white/30 backdrop-blur-md hover:bg-white/20 hover:border-white/50 hover:-translate-y-0.5;
-  }
-
-  .feature-card {
-    @apply bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20;
-  }
-
-  .tech-stack {
-    @apply bg-white/10 p-8 rounded-3xl backdrop-blur-md border border-white/20;
-  }
-
-  .tech-item {
-    @apply bg-white/20 px-4 py-2 rounded-full text-sm font-medium;
-  }
-
-  .social-link {
-    @apply text-white no-underline opacity-70 transition-opacity duration-300 hover:opacity-100;
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-red-400 via-teal-400 via-blue-400 to-green-400 bg-clip-text text-transparent animate-pulse;
   }
 }
