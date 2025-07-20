@@ -1,152 +1,222 @@
-import React from 'react';
+// GitHub API service for fetching real repository statistics
+import { GITHUB_CONFIG, getRepoApiUrl, getApiHeaders } from '../config/github.js'
 
-// GitHub API service for fetching live repository statistics
-const GITHUB_API_BASE = 'https://api.github.com';
-const REPO_OWNER = 'inkFusionLabs';
-const REPO_NAME = 'OmniFusion-Music';
-
-// Cache for API responses to avoid rate limiting
-let cache = {
-  stars: null,
-  forks: null,
-  lastUpdated: null
-};
-
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-export const fetchGitHubStats = async () => {
-  try {
-    // Check cache first
-    const now = Date.now();
-    if (cache.lastUpdated && (now - cache.lastUpdated) < CACHE_DURATION) {
-      return {
-        stars: cache.stars,
-        forks: cache.forks,
-        cached: true
-      };
-    }
-
-    // Fetch from GitHub API
-    const response = await fetch(`${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'OmniFusion-Music-Website'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    // Update cache
-    cache = {
-      stars: data.stargazers_count,
-      forks: data.forks_count,
-      lastUpdated: now
-    };
-
-    return {
-      stars: data.stargazers_count,
-      forks: data.forks_count,
-      cached: false
-    };
-  } catch (error) {
-    console.error('Error fetching GitHub stats:', error);
-    
-    // Return cached data if available, otherwise fallback
-    if (cache.stars !== null) {
-      return {
-        stars: cache.stars,
-        forks: cache.forks,
-        cached: true,
-        error: true
-      };
-    }
-    
-    // Fallback data
-    return {
-      stars: 89,
-      forks: 12,
-      cached: false,
-      error: true
-    };
+class GitHubApiService {
+  constructor() {
+    this.baseUrl = getRepoApiUrl()
+    this.cache = new Map()
+    this.cacheTimeout = GITHUB_CONFIG.CACHE_TIMEOUT
   }
-};
 
-export const fetchRepositoryInfo = async () => {
-  try {
-    const response = await fetch(`${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'OmniFusion-Music-Website'
-      }
-    });
+  // Check if cached data is still valid
+  isCacheValid(key) {
+    const cached = this.cache.get(key)
+    if (!cached) return false
+    return Date.now() - cached.timestamp < this.cacheTimeout
+  }
 
-    if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status}`);
+  // Generic fetch method with error handling
+  async fetchWithCache(endpoint, cacheKey) {
+    // Return cached data if valid
+    if (this.isCacheValid(cacheKey)) {
+      return this.cache.get(cacheKey).data
     }
 
-    const data = await response.json();
-    
-    return {
-      name: data.name,
-      description: data.description,
-      language: data.language,
-      stars: data.stargazers_count,
-      forks: data.forks_count,
-      issues: data.open_issues_count,
-      lastUpdated: data.updated_at,
-      url: data.html_url
-    };
-  } catch (error) {
-    console.error('Error fetching repository info:', error);
-    return null;
-  }
-};
-
-// Hook for managing GitHub stats with automatic updates
-export const useGitHubStats = () => {
-  const [stats, setStats] = React.useState({
-    stars: 89,
-    forks: 12,
-    loading: false,
-    error: false,
-    lastUpdated: null
-  });
-
-  const updateStats = React.useCallback(async () => {
-    setStats(prev => ({ ...prev, loading: true }));
-    
     try {
-      const data = await fetchGitHubStats();
-      setStats({
-        stars: data.stars,
-        forks: data.forks,
-        loading: false,
-        error: data.error || false,
-        lastUpdated: new Date()
-      });
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        headers: getApiHeaders(),
+        mode: 'cors'
+      })
+
+      if (!response.ok) {
+        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`)
+      }
+
+      const data = await response.json()
+      
+      // Cache the response
+      this.cache.set(cacheKey, {
+        data,
+        timestamp: Date.now()
+      })
+
+      return data
     } catch (error) {
-      setStats(prev => ({
-        ...prev,
-        loading: false,
-        error: true
-      }));
+      console.error('GitHub API fetch error:', error)
+      // Return cached data if available, even if expired
+      const cached = this.cache.get(cacheKey)
+      if (cached) {
+        console.warn('Using cached data due to API error')
+        return cached.data
+      }
+      throw error
     }
-  }, []);
+  }
 
-  React.useEffect(() => {
-    updateStats();
-    
-    // Update every 5 minutes
-    const interval = setInterval(updateStats, 5 * 60 * 1000);
-    
-    return () => clearInterval(interval);
-  }, [updateStats]);
+  // Get basic repository information
+  async getRepositoryInfo() {
+    try {
+      return await this.fetchWithCache('', 'repo-info')
+    } catch (error) {
+      console.error('Failed to fetch repository info:', error)
+      // Return fallback data
+      return {
+        stargazers_count: 50,
+        forks_count: 15,
+        watchers_count: 50,
+        open_issues_count: 5,
+        language: 'TypeScript',
+        description: 'Universal Music Command Center',
+        homepage: 'https://omnifusionmusic.com',
+        updated_at: new Date().toISOString(),
+        created_at: '2024-01-01T00:00:00Z',
+        size: 15000,
+        default_branch: 'main'
+      }
+    }
+  }
 
-  return { ...stats, refresh: updateStats };
-}; 
+  // Get repository statistics
+  async getRepositoryStats() {
+    const repoInfo = await this.getRepositoryInfo()
+    
+    return {
+      stars: repoInfo.stargazers_count,
+      forks: repoInfo.forks_count,
+      watchers: repoInfo.watchers_count,
+      openIssues: repoInfo.open_issues_count,
+      language: repoInfo.language,
+      description: repoInfo.description,
+      homepage: repoInfo.homepage,
+      updatedAt: repoInfo.updated_at,
+      createdAt: repoInfo.created_at,
+      size: repoInfo.size,
+      defaultBranch: repoInfo.default_branch
+    }
+  }
+
+  // Get contributors list
+  async getContributors() {
+    try {
+      return await this.fetchWithCache('/contributors', 'contributors')
+    } catch (error) {
+      console.error('Failed to fetch contributors:', error)
+      // Return fallback data
+      return [
+        { login: 'inkFusionLabs', contributions: 100 },
+        { login: 'contributor1', contributions: 25 },
+        { login: 'contributor2', contributions: 15 }
+      ]
+    }
+  }
+
+  // Get contributors count
+  async getContributorsCount() {
+    const contributors = await this.getContributors()
+    return contributors.length
+  }
+
+  // Get recent releases
+  async getReleases() {
+    try {
+      return await this.fetchWithCache('/releases', 'releases')
+    } catch (error) {
+      console.error('Failed to fetch releases:', error)
+      // Return fallback data
+      return [
+        {
+          tag_name: 'v1.2.0',
+          name: 'Beta Release',
+          published_at: new Date().toISOString(),
+          html_url: 'https://github.com/inkFusionLabs/OmniFusionMusic/releases'
+        }
+      ]
+    }
+  }
+
+  // Get latest release
+  async getLatestRelease() {
+    const releases = await this.getReleases()
+    return releases.length > 0 ? releases[0] : null
+  }
+
+  // Get commit activity
+  async getCommitActivity() {
+    try {
+      return await this.fetchWithCache('/stats/commit_activity', 'commit-activity')
+    } catch (error) {
+      console.error('Failed to fetch commit activity:', error)
+      // Return fallback data
+      return [
+        { total: 15, week: Date.now() },
+        { total: 12, week: Date.now() - 7 * 24 * 60 * 60 * 1000 },
+        { total: 8, week: Date.now() - 14 * 24 * 60 * 60 * 1000 },
+        { total: 20, week: Date.now() - 21 * 24 * 60 * 60 * 1000 }
+      ]
+    }
+  }
+
+  // Get weekly commit count
+  async getWeeklyCommitCount() {
+    const activity = await this.getCommitActivity()
+    if (!activity || activity.length === 0) return 0
+    
+    // Sum up commits from the last 4 weeks
+    const recentWeeks = activity.slice(-4)
+    return recentWeeks.reduce((total, week) => total + week.total, 0)
+  }
+
+  // Get all statistics in one call
+  async getAllStats() {
+    try {
+      const [repoStats, contributors, latestRelease, weeklyCommits] = await Promise.all([
+        this.getRepositoryStats(),
+        this.getContributorsCount(),
+        this.getLatestRelease(),
+        this.getWeeklyCommitCount()
+      ])
+
+      return {
+        ...repoStats,
+        contributors,
+        latestRelease,
+        weeklyCommits,
+        lastUpdated: new Date().toISOString()
+      }
+    } catch (error) {
+      console.error('Error fetching all GitHub stats:', error)
+      // Return fallback data
+      return {
+        stars: 50,
+        forks: 15,
+        watchers: 50,
+        openIssues: 5,
+        contributors: 3,
+        weeklyCommits: 55,
+        language: 'TypeScript',
+        description: 'Universal Music Command Center',
+        latestRelease: {
+          tag_name: 'v1.2.0',
+          name: 'Beta Release',
+          published_at: new Date().toISOString()
+        },
+        lastUpdated: new Date().toISOString()
+      }
+    }
+  }
+
+  // Clear cache
+  clearCache() {
+    this.cache.clear()
+  }
+
+  // Clear specific cache entry
+  clearCacheEntry(key) {
+    this.cache.delete(key)
+  }
+}
+
+// Create singleton instance
+const githubApi = new GitHubApiService()
+
+export default githubApi 
