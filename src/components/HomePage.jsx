@@ -4,28 +4,38 @@ import Features from './Features';
 import AppShowcase from './AppShowcase';
 import FeatureComparison from './FeatureComparison';
 import ScreenshotsGallery from './ScreenshotsGallery';
-import SystemRequirements from './SystemRequirements';
-import Documentation from './Documentation';
 import InteractiveDemo from './InteractiveDemo';
 import MusicVisualizer from './MusicVisualizer';
 import VoiceControl from './VoiceControl';
-import KeyboardShortcuts from './KeyboardShortcuts';
+import SystemRequirements from './SystemRequirements';
+import Documentation from './Documentation';
 import Testimonials from './Testimonials';
-import PressKit from './PressKit';
 import Download from './Download';
 import FAQ from './FAQ';
 import ContactForm from './ContactForm';
 import Newsletter from './Newsletter';
-import ThemeToggle from './ThemeToggle';
 import AppConnectionStatus from './AppConnectionStatus';
+import PressKit from './PressKit';
+import ThemeToggle from './ThemeToggle';
+import KeyboardShortcuts from './KeyboardShortcuts';
+import BetaTesting from './BetaTesting';
+import Navigation from './Navigation';
 
 const HomePage = () => {
   return (
     <div className="min-h-screen">
+      <Navigation />
       <ThemeToggle />
       <KeyboardShortcuts />
-      <Hero />
-      <Features />
+      
+      <section id="hero">
+        <Hero />
+      </section>
+      
+      <section id="features">
+        <Features />
+      </section>
+      
       <AppShowcase />
       <FeatureComparison />
       <ScreenshotsGallery />
@@ -58,10 +68,26 @@ const HomePage = () => {
         </div>
       </section>
       
-      <Download />
-      <FAQ />
-      <ContactForm />
-      <Newsletter />
+      <section id="download">
+        <Download />
+      </section>
+      
+      <section id="beta-testing">
+        <BetaTesting />
+      </section>
+      
+      <section id="faq">
+        <FAQ />
+      </section>
+      
+      <section id="contact">
+        <ContactForm />
+      </section>
+      
+      <section id="newsletter">
+        <Newsletter />
+      </section>
+      
       <AppConnectionStatus />
       
       {/* Press Kit */}
