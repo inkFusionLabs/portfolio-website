@@ -3,6 +3,7 @@ import Hero from './Hero';
 import Features from './Features';
 import AppShowcase from './AppShowcase';
 import FeatureComparison from './FeatureComparison';
+import ScreenshotsGallery from './ScreenshotsGallery';
 import Download from './Download';
 import FAQ from './FAQ';
 import ContactForm from './ContactForm';
@@ -17,6 +18,7 @@ const HomePage = () => {
       <Features />
       <AppShowcase />
       <FeatureComparison />
+      <ScreenshotsGallery />
       <Download />
       <FAQ />
       <ContactForm />

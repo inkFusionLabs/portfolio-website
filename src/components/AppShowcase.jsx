@@ -1,31 +1,8 @@
 import React, { useState } from 'react';
+import AppScreenshots from './AppScreenshots';
 
 const AppShowcase = () => {
   const [activeTab, setActiveTab] = useState('screenshots');
-
-  const screenshots = [
-    {
-      id: 1,
-      title: "Main Interface",
-      description: "Clean, modern desktop interface with unified music controls",
-      image: "/screenshots/main-interface.png",
-      alt: "OmniFusion Music main interface showing unified music player"
-    },
-    {
-      id: 2,
-      title: "Playlist Management",
-      description: "Seamlessly manage playlists across all music services",
-      image: "/screenshots/playlist-management.png",
-      alt: "Playlist management interface showing cross-platform sync"
-    },
-    {
-      id: 3,
-      title: "Multi-Service Integration",
-      description: "Connect and switch between Spotify, Apple Music, and more",
-      image: "/screenshots/multi-service.png",
-      alt: "Multiple music service integration dashboard"
-    }
-  ];
 
   const features = [
     {
@@ -101,23 +78,7 @@ const AppShowcase = () => {
 
         {/* Content */}
         {activeTab === 'screenshots' ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {screenshots.map((screenshot) => (
-              <div key={screenshot.id} className="group">
-                <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                  {/* Placeholder for screenshot */}
-                  <div className="w-full h-48 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl mb-4 flex items-center justify-center border border-white/10">
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">📱</div>
-                      <p className="text-white/60 text-sm">{screenshot.title}</p>
-                    </div>
-                  </div>
-                  <h3 className="text-white font-semibold text-lg mb-2">{screenshot.title}</h3>
-                  <p className="text-white/70 text-sm">{screenshot.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <AppScreenshots />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
