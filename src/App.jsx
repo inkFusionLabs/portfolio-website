@@ -1,22 +1,19 @@
 import React from 'react';
-import Hero from './components/Hero';
-import Buttons from './components/Buttons';
-import Features from './components/Features';
-import TechStack from './components/TechStack';
-import Footer from './components/Footer';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './components/HomePage';
+import SpotifyCallback from './components/SpotifyCallback';
+import Analytics from './components/Analytics';
 import './index.css';
 
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="container mx-auto px-4 py-8">
-        <Hero />
-        <Buttons />
-        <Features />
-        <TechStack />
-        <Footer />
-      </div>
-    </div>
+    <Router>
+      <Analytics />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/callback" element={<SpotifyCallback />} />
+      </Routes>
+    </Router>
   );
 }
 
