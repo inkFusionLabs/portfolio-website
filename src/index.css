@@ -45,6 +45,6 @@
   }
 
   .gradient-text {
-    @apply bg-gradient-to-r from-red-400 via-teal-400 via-blue-400 to-green-400 bg-clip-text text-transparent bg-[length:400%_400%] animate-gradient;
+    @apply bg-gradient-to-r from-red-400 via-teal-400 via-blue-400 to-green-400 bg-clip-text text-transparent animate-pulse;
   }
 }
