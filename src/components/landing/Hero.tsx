@@ -1,5 +1,5 @@
 import React from 'react';
-import { Download, Play, Music, Zap } from 'lucide-react';
+import { Download, Play, Zap } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
