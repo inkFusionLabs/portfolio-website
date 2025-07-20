@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { CheckCircle, XCircle, Loader2, Music, Shield, Users, Download } from 'lucide-react'
 
 const Callback = () => {
   const [searchParams] = useSearchParams()
@@ -161,13 +160,39 @@ const Callback = () => {
   const getStatusIcon = () => {
     switch (status) {
       case 'loading':
-        return <Loader2 className="w-16 h-16 text-blue-400 animate-spin" />
+        return (
+          <div className="w-16 h-16 text-blue-400 animate-spin">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10c0-5.5-4.5-10-10-10zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/>
+              <path d="M12 4a8 8 0 0 0-8 8c0 4.4 3.6 8 8 8s8-3.6 8-8c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
+            </svg>
+          </div>
+        )
       case 'success':
-        return <CheckCircle className="w-16 h-16 text-green-400" />
+        return (
+          <div className="w-16 h-16 text-green-400">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+          </div>
+        )
       case 'error':
-        return <XCircle className="w-16 h-16 text-red-400" />
+        return (
+          <div className="w-16 h-16 text-red-400">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/>
+            </svg>
+          </div>
+        )
       default:
-        return <Loader2 className="w-16 h-16 text-blue-400 animate-spin" />
+        return (
+          <div className="w-16 h-16 text-blue-400 animate-spin">
+            <svg fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10c0-5.5-4.5-10-10-10zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/>
+              <path d="M12 4a8 8 0 0 0-8 8c0 4.4 3.6 8 8 8s8-3.6 8-8c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
+            </svg>
+          </div>
+        )
     }
   }
 
@@ -198,11 +223,11 @@ const Callback = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      {/* Background Elements */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
+      {/* Background elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl floating-element"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl floating-element-delayed"></div>
+        <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative z-10 max-w-md w-full">
@@ -234,76 +259,42 @@ const Callback = () => {
 
           {/* Action Buttons */}
           <div className="space-y-3">
+            <button
+              onClick={() => navigate('/')}
+              className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25"
+            >
+              Go to Homepage
+            </button>
+            
             {status === 'success' && (
               <button
-                onClick={() => navigate('/')}
-                className={`w-full py-3 px-6 bg-gradient-to-r ${getStatusColor()} text-white font-semibold rounded-xl hover:opacity-90 transition-opacity`}
+                onClick={() => window.location.reload()}
+                className="w-full px-6 py-3 bg-white/10 backdrop-blur-md text-white font-semibold rounded-xl border border-white/20 transition-all duration-300 hover:bg-white/20 hover:border-white/40"
               >
-                Continue to OmniFusion Music
+                Try Another Action
               </button>
             )}
-
+            
             {status === 'error' && (
-              <div className="space-y-3">
-                <button
-                  onClick={() => window.location.reload()}
-                  className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
-                >
-                  Try Again
-                </button>
-                <button
-                  onClick={() => navigate('/')}
-                  className="w-full py-3 px-6 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-colors"
-                >
-                  Go Home
-                </button>
-              </div>
-            )}
-
-            {/* Countdown */}
-            {(status === 'success' || status === 'error') && (
-              <p className="text-sm text-gray-400">
-                Redirecting in {countdown} seconds...
-              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full px-6 py-3 bg-white/10 backdrop-blur-md text-white font-semibold rounded-xl border border-white/20 transition-all duration-300 hover:bg-white/20 hover:border-white/40"
+              >
+                Try Again
+              </button>
             )}
           </div>
+
+          {/* Countdown */}
+          {(status === 'success' || status === 'error') && (
+            <p className="text-gray-400 text-sm mt-4">
+              Redirecting in {countdown} seconds...
+            </p>
+          )}
         </div>
 
-        {/* Additional Info Cards */}
-        <div className="mt-6 space-y-4">
-          {/* What's Next */}
-          {status === 'success' && (
-            <div className="glass p-6 rounded-2xl">
-              <h3 className="text-lg font-semibold text-white mb-4">What's Next?</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <Music className="w-5 h-5 text-green-400" />
-                  <span className="text-gray-300">Start exploring your music library</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Users className="w-5 h-5 text-blue-400" />
-                  <span className="text-gray-300">Connect with other music lovers</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Download className="w-5 h-5 text-purple-400" />
-                  <span className="text-gray-300">Download the desktop app</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Security Info */}
-          <div className="glass p-6 rounded-2xl">
-            <div className="flex items-center space-x-3 mb-3">
-              <Shield className="w-5 h-5 text-green-400" />
-              <h3 className="text-lg font-semibold text-white">Security</h3>
-            </div>
-            <p className="text-gray-300 text-sm">
-              Your data is encrypted and secure. We never store sensitive information like passwords.
-            </p>
-          </div>
-
-          {/* Support */}
+        {/* Help Section */}
+        <div className="mt-6">
           <div className="glass p-6 rounded-2xl">
             <h3 className="text-lg font-semibold text-white mb-3">Need Help?</h3>
             <div className="space-y-2">
@@ -320,7 +311,7 @@ const Callback = () => {
                 💬 Join our community
               </button>
               <a
-                href="mailto:support@omnifusionmusic.com"
+                href="mailto:inkfusionapps@icloud.com"
                 className="block text-gray-300 hover:text-white transition-colors text-sm"
               >
                 📧 Contact support
