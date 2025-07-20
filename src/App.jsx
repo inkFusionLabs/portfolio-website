@@ -19,10 +19,29 @@ function App() {
         // Initialize app integration service
         await appIntegrationService.init();
         
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+          try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('Service Worker registered:', registration);
+            
+            // Track PWA installation
+            window.addEventListener('beforeinstallprompt', (e) => {
+              analyticsService.trackAppEvent('pwa_install_prompt', {
+                platform: navigator.platform,
+                user_agent: navigator.userAgent
+              });
+            });
+          } catch (error) {
+            console.log('Service Worker registration failed:', error);
+          }
+        }
+        
         // Track app initialization
         analyticsService.trackAppEvent('initialization', {
-          services_initialized: ['cache', 'analytics', 'app_integration'],
-          app_installed: appIntegrationService.getAppStatus().installed
+          services_initialized: ['cache', 'analytics', 'app_integration', 'pwa'],
+          app_installed: appIntegrationService.getAppStatus().installed,
+          pwa_supported: 'serviceWorker' in navigator
         });
         
         console.log('Services initialized successfully');

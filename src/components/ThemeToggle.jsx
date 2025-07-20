@@ -2,46 +2,108 @@ import React, { useState, useEffect } from 'react';
 
 const ThemeToggle = () => {
   const [isDark, setIsDark] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     // Check for saved theme preference or default to dark
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem('omnifusion-theme');
     if (savedTheme) {
       setIsDark(savedTheme === 'dark');
+      applyTheme(savedTheme === 'dark');
+    } else {
+      // Default to dark theme
+      setIsDark(true);
+      applyTheme(true);
     }
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+  const applyTheme = (dark) => {
+    const root = document.documentElement;
     
-    // Apply theme to document
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
+    if (dark) {
+      root.classList.add('dark');
+      root.style.setProperty('--bg-primary', '#000000');
+      root.style.setProperty('--text-primary', '#ffffff');
+      root.style.setProperty('--accent-primary', '#8B5CF6');
+      root.style.setProperty('--accent-secondary', '#A855F7');
     } else {
-      document.documentElement.classList.add('light');
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      root.style.setProperty('--bg-primary', '#ffffff');
+      root.style.setProperty('--text-primary', '#000000');
+      root.style.setProperty('--accent-primary', '#667eea');
+      root.style.setProperty('--accent-secondary', '#764ba2');
     }
   };
 
+  const toggleTheme = () => {
+    setIsAnimating(true);
+    
+    setTimeout(() => {
+      const newTheme = !isDark;
+      setIsDark(newTheme);
+      applyTheme(newTheme);
+      localStorage.setItem('omnifusion-theme', newTheme ? 'dark' : 'light');
+      
+      // Add theme change animation
+      const themeChangeEvent = new CustomEvent('themeChange', { 
+        detail: { theme: newTheme ? 'dark' : 'light' } 
+      });
+      window.dispatchEvent(themeChangeEvent);
+      
+      setIsAnimating(false);
+    }, 300);
+  };
+
   return (
-    <button
-      onClick={toggleTheme}
-      className="fixed top-6 right-6 z-50 p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
-      aria-label="Toggle theme"
-    >
-      {isDark ? (
-        <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/>
-        </svg>
-      ) : (
-        <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/>
-        </svg>
-      )}
-    </button>
+    <div className="fixed top-4 left-4 z-50">
+      <button
+        onClick={toggleTheme}
+        disabled={isAnimating}
+        className={`
+          relative w-14 h-14 rounded-full flex items-center justify-center text-xl
+          transition-all duration-500 ease-in-out transform
+          ${isAnimating ? 'scale-110' : 'hover:scale-105'}
+          ${isDark 
+            ? 'bg-gradient-to-r from-purple-600 to-pink-600 shadow-glow-lg' 
+            : 'bg-gradient-to-r from-yellow-400 to-orange-500 shadow-glow-lg'
+          }
+        `}
+        aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      >
+        {/* Sun Icon */}
+        <div className={`
+          absolute inset-0 flex items-center justify-center transition-all duration-500
+          ${isDark ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'}
+        `}>
+          ☀️
+        </div>
+        
+        {/* Moon Icon */}
+        <div className={`
+          absolute inset-0 flex items-center justify-center transition-all duration-500
+          ${isDark ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'}
+        `}>
+          🌙
+        </div>
+        
+        {/* Ripple Effect */}
+        {isAnimating && (
+          <div className="absolute inset-0 rounded-full bg-white/20 animate-ping"></div>
+        )}
+      </button>
+      
+      {/* Theme Indicator */}
+      <div className={`
+        absolute -bottom-8 left-1/2 transform -translate-x-1/2
+        px-2 py-1 rounded-full text-xs font-medium transition-all duration-300
+        ${isDark 
+          ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
+          : 'bg-yellow-500/20 text-yellow-700 border border-yellow-500/30'
+        }
+      `}>
+        {isDark ? 'Dark' : 'Light'}
+      </div>
+    </div>
   );
 };
 
