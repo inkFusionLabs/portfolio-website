@@ -1,129 +1,91 @@
 import { useState } from 'react'
-import { Music, CheckCircle, X, ExternalLink } from 'lucide-react'
+import { Music, ExternalLink, CheckCircle, AlertCircle, Loader } from 'lucide-react'
 import { spotifyService } from '../services/spotify'
+import { useNotifications } from '../contexts/NotificationContext'
 
 interface SpotifyOnboardingProps {
-  onComplete: () => void
-  onSkip: () => void
+  onSuccess?: () => void
+  onCancel?: () => void
 }
 
-export default function SpotifyOnboarding({ onComplete, onSkip }: SpotifyOnboardingProps) {
-  const [step, setStep] = useState<'intro' | 'connecting' | 'manual' | 'success'>('intro')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [manualCode, setManualCode] = useState('')
+export default function SpotifyOnboarding({ onSuccess, onCancel }: SpotifyOnboardingProps) {
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [step, setStep] = useState<'initial' | 'connecting' | 'success' | 'error'>('initial')
+  const { showSuccess, showError } = useNotifications()
 
-  const handleStartConnection = async () => {
-    setIsLoading(true)
-    setError('')
-    
+  const handleConnect = async () => {
+    setIsConnecting(true)
+    setError(null)
+    setStep('connecting')
+
     try {
       await spotifyService.startAuth()
-      setStep('connecting')
-      
-    } catch (error) {
-      console.error('Failed to start Spotify authentication:', error)
-      setError(error instanceof Error ? error.message : 'Failed to start authentication')
+      setStep('success')
+      showSuccess('Spotify Connected!', 'Your Spotify account has been successfully connected.')
+      onSuccess?.()
+    } catch (err) {
+      console.error('Spotify connection failed:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Failed to connect to Spotify'
+      setError(errorMessage)
+      setStep('error')
+      showError('Connection Failed', errorMessage)
     } finally {
-      setIsLoading(false)
+      setIsConnecting(false)
     }
   }
 
-  const handleManualCodeSubmit = async () => {
-    if (!manualCode.trim()) {
-      setError('Please enter the authorization code')
-      return
-    }
-
-    setIsLoading(true)
-    setError('')
-    
-    try {
-      const success = await spotifyService.handleManualCode(manualCode.trim())
-      
-      if (success) {
-        setStep('success')
-        setTimeout(() => {
-          onComplete()
-        }, 2000)
-      } else {
-        setError('Invalid authorization code. Please try again.')
-      }
-    } catch (error) {
-      console.error('Failed to handle manual code:', error)
-      setError(error instanceof Error ? error.message : 'Failed to authenticate')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleSkip = () => {
-    onSkip()
+  const handleRetry = () => {
+    setStep('initial')
+    setError(null)
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50">
-      <div className="glass-effect rounded-xl p-8 max-w-md w-full">
+    <div className="glass-effect rounded-xl p-8 max-w-md mx-auto">
+      <div className="text-center space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-              <Music className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">Connect Spotify</h2>
-              <p className="text-sm text-gray-400">Step {step === 'intro' ? 1 : step === 'connecting' ? 2 : step === 'manual' ? 3 : 4} of 4</p>
-            </div>
+        <div className="space-y-2">
+          <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
+            <Music className="w-8 h-8 text-green-400" />
           </div>
-          <button
-            onClick={handleSkip}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <h2 className="text-2xl font-bold text-white">Connect Spotify</h2>
+          <p className="text-gray-400">
+            Connect your Spotify account to start enjoying your music library
+          </p>
         </div>
 
-        {/* Content */}
-        {step === 'intro' && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Welcome to OmniFusion Music!
-              </h3>
-              <p className="text-gray-300 mb-4">
-                Connect your Spotify account to access your music library, playlists, and start streaming your favorite tracks.
-              </p>
+        {/* Connection Steps */}
+        {step === 'initial' && (
+          <div className="space-y-4">
+            <div className="text-left space-y-3">
+              <div className="flex items-center space-x-3 text-sm text-gray-300">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span>Access your playlists and library</span>
+              </div>
+              <div className="flex items-center space-x-3 text-sm text-gray-300">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span>Control playback from OmniFusion</span>
+              </div>
+              <div className="flex items-center space-x-3 text-sm text-gray-300">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span>Search across your music</span>
+              </div>
             </div>
             
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-gray-800/30 rounded-lg">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm text-gray-300">Access your music library</span>
-              </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-800/30 rounded-lg">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm text-gray-300">Control playback from the app</span>
-              </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-800/30 rounded-lg">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm text-gray-300">Manage your playlists</span>
-              </div>
-            </div>
-
             <button
-              onClick={handleStartConnection}
-              disabled={isLoading}
-              className="w-full px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              onClick={handleConnect}
+              disabled={isConnecting}
+              className="w-full px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >
-              {isLoading ? (
+              {isConnecting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Opening...</span>
+                  <Loader className="w-4 h-4 animate-spin" />
+                  <span>Connecting...</span>
                 </>
               ) : (
                 <>
                   <ExternalLink className="w-4 h-4" />
-                  <span>Connect Spotify</span>
+                  <span>Connect Spotify Account</span>
                 </>
               )}
             </button>
@@ -131,74 +93,59 @@ export default function SpotifyOnboarding({ onComplete, onSkip }: SpotifyOnboard
         )}
 
         {step === 'connecting' && (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Authorize Spotify
-              </h3>
-              <p className="text-gray-300 mb-4">
-                A browser window should have opened. If not, copy the URL below and paste it in your browser.
-              </p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-center space-x-3">
+              <Loader className="w-6 h-6 animate-spin text-green-400" />
+              <span className="text-white">Opening Spotify authorization...</span>
             </div>
-
-            <div className="space-y-3">
-              <p className="text-sm text-gray-400">
-                After authorizing, you'll get a code. Paste it here:
-              </p>
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  value={manualCode}
-                  onChange={(e) => setManualCode(e.target.value)}
-                  placeholder="Enter authorization code"
-                  className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                <button
-                  onClick={handleManualCodeSubmit}
-                  disabled={isLoading || !manualCode.trim()}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? 'Connecting...' : 'Connect'}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <div className="p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
-                <p className="text-sm text-red-400">{error}</p>
-              </div>
-            )}
+            <p className="text-sm text-gray-400">
+              Please complete the authorization in your browser. You'll be redirected back to complete the setup.
+            </p>
           </div>
         )}
 
         {step === 'success' && (
-          <div className="text-center space-y-6">
-            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle className="w-8 h-8 text-white" />
+          <div className="space-y-4">
+            <div className="flex items-center justify-center space-x-3">
+              <CheckCircle className="w-6 h-6 text-green-400" />
+              <span className="text-white">Successfully Connected!</span>
             </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Successfully Connected!
-              </h3>
-              <p className="text-gray-300">
-                Your Spotify account is now connected. You can start exploring your music library.
-              </p>
+            <p className="text-sm text-gray-400">
+              Your Spotify account is now connected. You can start exploring your music library.
+            </p>
+          </div>
+        )}
+
+        {step === 'error' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-center space-x-3">
+              <AlertCircle className="w-6 h-6 text-red-400" />
+              <span className="text-white">Connection Failed</span>
+            </div>
+            <p className="text-sm text-red-400">{error}</p>
+            <div className="flex space-x-3">
+              <button
+                onClick={handleRetry}
+                className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
+              >
+                Try Again
+              </button>
+              {onCancel && (
+                <button
+                  onClick={onCancel}
+                  className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                >
+                  Cancel
+                </button>
+              )}
             </div>
           </div>
         )}
 
         {/* Footer */}
-        {step !== 'success' && (
-          <div className="mt-6 pt-6 border-t border-gray-700">
-            <button
-              onClick={handleSkip}
-              className="w-full px-4 py-2 text-gray-400 hover:text-white transition-colors"
-            >
-              Skip for now
-            </button>
-          </div>
-        )}
+        <div className="text-xs text-gray-500">
+          By connecting, you agree to Spotify's terms of service and privacy policy.
+        </div>
       </div>
     </div>
   )
