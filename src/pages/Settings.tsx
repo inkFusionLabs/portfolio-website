@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Settings as SettingsIcon, Music, Shield, Bell, Palette, Wifi, User, Copy, ExternalLink } from 'lucide-react'
+import { Settings as SettingsIcon, Music, Shield, Bell, Palette, Wifi, User, ExternalLink, LogOut } from 'lucide-react'
 import { spotifyService } from '../services/spotify'
-import { open } from '@tauri-apps/api/shell'
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('services')
@@ -76,6 +75,11 @@ export default function Settings() {
     spotifyService.disconnect()
     setIsSpotifyConnected(false)
     setConnectionError('')
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('omnifusion_user')
+    window.location.reload()
   }
 
   const tabs = [
@@ -215,37 +219,25 @@ export default function Settings() {
                 <h2 className="text-2xl font-bold text-white mb-6">Account Settings</h2>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-harmony-500 to-primary-500 rounded-full flex items-center justify-center">
-                      <User className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">User Profile</h3>
-                      <p className="text-sm text-gray-400">Manage your account information</p>
+                  <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+                    <h3 className="text-lg font-semibold text-white mb-4">Beta Access</h3>
+                    <p className="text-sm text-gray-400 mb-4">
+                      You are currently using the OmniFusion Music beta version. Thank you for being an early adopter!
+                    </p>
+                    <div className="flex items-center space-x-2 px-3 py-2 bg-blue-500/20 border border-blue-500/30 rounded-lg">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm text-blue-400">Beta User</span>
                     </div>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Display Name</label>
-                      <input
-                        type="text"
-                        defaultValue="Music Lover"
-                        className="w-full px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-harmony-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                      <input
-                        type="email"
-                        defaultValue="user@example.com"
-                        className="w-full px-4 py-2 bg-gray-800/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-harmony-500"
-                      />
-                    </div>
-                    
-                    <button className="px-6 py-2 bg-harmony-500 hover:bg-harmony-600 text-white rounded-lg transition-colors">
-                      Save Changes
+
+                  <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/50">
+                    <h3 className="text-lg font-semibold text-white mb-4">Account Actions</h3>
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors flex items-center justify-center space-x-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
                     </button>
                   </div>
                 </div>

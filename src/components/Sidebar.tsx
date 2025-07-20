@@ -41,7 +41,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   const { state } = useMusic()
 
   return (
-    <div className={`fixed left-0 top-0 h-full bg-gray-900/95 backdrop-blur-xl border-r border-gray-700/50 transition-all duration-300 z-[100] ${
+    <div className={`fixed left-0 top-0 h-full sidebar-glass transition-all duration-300 z-50 ${
       isOpen ? 'w-64' : 'w-16'
     }`}>
       {/* Header */}
@@ -73,11 +73,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               e.stopPropagation()
             }}
             className={({ isActive }) =>
-              `flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group cursor-pointer ${
-                isActive
-                  ? 'bg-harmony-500/20 text-harmony-400 border border-harmony-500/30'
-                  : 'text-gray-300 hover:bg-gray-800/50 hover:text-white'
-              }`
+              `nav-link ${isActive ? 'active' : 'text-gray-300 hover:text-white'}`
             }
           >
             <item.icon className="w-5 h-5 flex-shrink-0" />
@@ -96,7 +92,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             {quickActions.map((action) => (
               <button
                 key={action.label}
-                className="flex items-center justify-between w-full p-3 rounded-lg text-gray-300 hover:bg-gray-800/50 hover:text-white transition-colors"
+                className="glass-effect flex items-center justify-between w-full p-3 rounded-lg text-gray-300 hover:text-white transition-all duration-300"
               >
                 <div className="flex items-center space-x-3">
                   <action.icon className="w-4 h-4" />
@@ -124,7 +120,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               state.connectedServices.map((service) => (
                 <div
                   key={service}
-                  className="flex items-center space-x-2 p-2 rounded-lg bg-green-500/10 border border-green-500/20"
+                  className="glass-effect flex items-center space-x-2 p-2 rounded-lg"
                 >
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span className="text-sm text-green-400 capitalize">{service}</span>
@@ -132,7 +128,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               ))
             )}
             {state.userProfile && (
-              <div className="mt-3 p-2 rounded-lg bg-gray-800/30 border border-gray-700/50">
+              <div className="glass-effect mt-3 p-2 rounded-lg">
                 <div className="flex items-center space-x-2">
                   {state.userProfile.images?.[0]?.url ? (
                     <img
@@ -156,7 +152,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       {/* Current Track (if playing) */}
       {state.currentTrack && isOpen && (
         <div className="absolute bottom-4 left-4 right-4">
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 border border-gray-700/50">
+          <div className="glass-effect rounded-lg p-3">
             <div className="flex items-center space-x-3">
               <img
                 src={state.currentTrack.artwork}

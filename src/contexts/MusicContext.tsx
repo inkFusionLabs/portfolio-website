@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect, useMemo, useCallback } from 'react'
 import { spotifyService } from '../services/spotify'
-import { spotifyPlaybackService } from '../services/spotifyPlayback'
 
 // Define SpotifyPlaybackState interface locally
 interface SpotifyPlaybackState {
@@ -104,13 +103,75 @@ const initialState: MusicState = {
   currentTrack: null,
   queue: [],
   isPlaying: false,
-  volume: 0.7,
-  playlists: [],
-  connectedServices: [],
+  volume: 50,
+  playlists: [
+    {
+      id: 'playlist1',
+      name: 'Chill Vibes',
+      description: 'Relaxing music for your downtime',
+      tracks: [],
+      service: 'spotify',
+      artwork: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop'
+    },
+    {
+      id: 'playlist2',
+      name: 'Workout Mix',
+      description: 'High energy tracks for your workout',
+      tracks: [],
+      service: 'spotify',
+      artwork: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop'
+    }
+  ],
+  connectedServices: ['spotify'],
   searchResults: [],
   currentPlaylist: null,
-  userProfile: null,
-  recentlyPlayed: [],
+  userProfile: {
+    id: 'sample-user',
+    display_name: 'John Constable',
+    email: 'john@example.com',
+    images: [
+      {
+        url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+        height: 150,
+        width: 150
+      }
+    ],
+    followers: {
+      total: 127
+    }
+  },
+  recentlyPlayed: [
+    {
+      id: 'sample1',
+      title: 'Bohemian Rhapsody',
+      artist: 'Queen',
+      album: 'A Night at the Opera',
+      duration: 354,
+      service: 'spotify',
+      artwork: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
+      url: ''
+    },
+    {
+      id: 'sample2',
+      title: 'Hotel California',
+      artist: 'Eagles',
+      album: 'Hotel California',
+      duration: 391,
+      service: 'spotify',
+      artwork: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop',
+      url: ''
+    },
+    {
+      id: 'sample3',
+      title: 'Imagine',
+      artist: 'John Lennon',
+      album: 'Imagine',
+      duration: 183,
+      service: 'spotify',
+      artwork: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop',
+      url: ''
+    }
+  ],
   isLoading: false,
   playbackState: null,
   currentPosition: 0,
@@ -184,107 +245,115 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     try {
       // Check if Spotify is connected
       const isConnected = await spotifyService.initialize()
+      
       if (isConnected) {
-        dispatch({ type: 'SET_CONNECTED_SERVICES', payload: ['spotify'] })
-        
-        // Initialize playback service
-        const accessToken = localStorage.getItem('spotify_access_token')
-        if (accessToken) {
-          try {
-            const playbackConnected = await spotifyPlaybackService.initialize(accessToken)
-            if (playbackConnected) {
-              // Set up playback state listeners with throttling
-              let lastUpdate = 0
-              const throttleDelay = 100 // 100ms throttle
-              
-              spotifyPlaybackService.onStateUpdate((playbackState) => {
-                try {
-                  const now = Date.now()
-                  if (now - lastUpdate < throttleDelay) return
-                  lastUpdate = now
-                  
-                  dispatch({ type: 'SET_PLAYBACK_STATE', payload: playbackState })
-                  if (playbackState) {
-                    dispatch({ type: 'SET_PLAYING', payload: !playbackState.paused })
-                    dispatch({ type: 'SET_CURRENT_POSITION', payload: playbackState.position || 0 })
-                    dispatch({ type: 'SET_CURRENT_DURATION', payload: playbackState.duration || 0 })
-                    
-                    // Update current track if it changed
-                    if (playbackState.track_window?.current_track) {
-                      const currentTrack: Track = {
-                        id: playbackState.track_window.current_track.id,
-                        title: playbackState.track_window.current_track.name,
-                        artist: playbackState.track_window.current_track.artists[0]?.name || 'Unknown Artist',
-                        album: playbackState.track_window.current_track.album?.name || 'Unknown Album',
-                        duration: Math.round((playbackState.duration || 0) / 1000),
-                        service: 'spotify' as const,
-                        artwork: playbackState.track_window.current_track.album?.images[0]?.url || '',
-                        url: playbackState.track_window.current_track.uri
-                      }
-                      dispatch({ type: 'SET_CURRENT_TRACK', payload: currentTrack })
-                    }
-                  }
-                } catch (error) {
-                  console.error('Error updating playback state:', error)
-                }
-              })
-              
-              spotifyPlaybackService.onError((error) => {
-                console.error('Playback error:', error)
-              })
-            } else {
-              console.warn('Spotify playback service failed to initialize - using fallback mode')
-            }
-          } catch (error) {
-            console.error('Error initializing playback service:', error)
-          }
-        }
+        console.log('🎵 Spotify connected, loading real data')
         
         // Load user profile
-        const profile = await spotifyService.getCurrentUser()
-        if (profile) {
-          dispatch({ type: 'SET_USER_PROFILE', payload: profile })
+        const userProfile = await spotifyService.getCurrentUser()
+        if (userProfile) {
+          dispatch({ type: 'SET_USER_PROFILE', payload: userProfile })
         }
         
-        // Load playlists
-        await loadPlaylists()
+        // Load user playlists
+        const playlists = await spotifyService.getUserPlaylists()
+        const formattedPlaylists: Playlist[] = playlists.map(playlist => ({
+          id: playlist.id,
+          name: playlist.name,
+          description: playlist.description || '',
+          tracks: [],
+          service: 'spotify',
+          artwork: playlist.images[0]?.url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop'
+        }))
+        dispatch({ type: 'SET_PLAYLISTS', payload: formattedPlaylists })
         
-        // Load recently played tracks
-        const recentTracks = await spotifyService.getSavedTracks(10)
-        const formattedRecentTracks = recentTracks.map((track: any) => ({
+        // Load saved tracks
+        const savedTracks = await spotifyService.getSavedTracks(20)
+        const formattedTracks: Track[] = savedTracks.map(track => ({
           id: track.id,
           title: track.name,
           artist: track.artists[0]?.name || 'Unknown Artist',
-          album: track.album?.name || 'Unknown Album',
-          duration: Math.round(track.duration_ms / 1000),
-          service: 'spotify' as const,
-          artwork: track.album?.images[0]?.url || '',
-          url: track.external_urls?.spotify || ''
+          album: track.album.name,
+          duration: Math.floor(track.duration_ms / 1000),
+          service: 'spotify',
+          artwork: track.album.images[0]?.url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
+          url: track.external_urls.spotify
         }))
-        dispatch({ type: 'SET_RECENTLY_PLAYED', payload: formattedRecentTracks })
+        dispatch({ type: 'SET_RECENTLY_PLAYED', payload: formattedTracks })
+        dispatch({ type: 'SET_CONNECTED_SERVICES', payload: ['spotify'] })
+        
+      } else {
+        console.log('🎵 Spotify not connected, loading demo data for beta')
+        
+        // Demo data for beta users
+        const sampleTracks: Track[] = [
+          {
+            id: 'sample1',
+            title: 'Bohemian Rhapsody',
+            artist: 'Queen',
+            album: 'A Night at the Opera',
+            duration: 354,
+            service: 'spotify',
+            artwork: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
+            url: ''
+          },
+          {
+            id: 'sample2',
+            title: 'Hotel California',
+            artist: 'Eagles',
+            album: 'Hotel California',
+            duration: 391,
+            service: 'spotify',
+            artwork: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop',
+            url: ''
+          },
+          {
+            id: 'sample3',
+            title: 'Imagine',
+            artist: 'John Lennon',
+            album: 'Imagine',
+            duration: 183,
+            service: 'spotify',
+            artwork: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop',
+            url: ''
+          }
+        ]
+        
+        const samplePlaylists: Playlist[] = [
+          {
+            id: 'playlist1',
+            name: 'Chill Vibes',
+            description: 'Relaxing music for your downtime',
+            tracks: sampleTracks,
+            service: 'spotify',
+            artwork: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop'
+          },
+          {
+            id: 'playlist2',
+            name: 'Workout Mix',
+            description: 'High energy tracks for your workout',
+            tracks: sampleTracks,
+            service: 'spotify',
+            artwork: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop'
+          }
+        ]
+        
+        dispatch({ type: 'SET_RECENTLY_PLAYED', payload: sampleTracks })
+        dispatch({ type: 'SET_PLAYLISTS', payload: samplePlaylists })
+        dispatch({ type: 'SET_CONNECTED_SERVICES', payload: [] })
       }
     } catch (error) {
       console.error('Failed to load user data:', error)
+      // Fallback to demo data on error
+      dispatch({ type: 'SET_CONNECTED_SERVICES', payload: [] })
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false })
     }
   }, [])
 
   const loadPlaylists = useCallback(async () => {
-    try {
-      const spotifyPlaylists = await spotifyService.getUserPlaylists()
-      const formattedPlaylists = spotifyPlaylists.map((playlist: any) => ({
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description || '',
-        tracks: [],
-        service: 'spotify',
-        artwork: playlist.images[0]?.url || ''
-      }))
-      dispatch({ type: 'SET_PLAYLISTS', payload: formattedPlaylists })
-    } catch (error) {
-      console.error('Failed to load playlists:', error)
-    }
+    // Demo playlists - no authentication required
+    console.log('🎵 Loading demo playlists')
   }, [])
 
   // Load user data on mount
@@ -303,95 +372,34 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     }
   }, [loadUserData])
 
-  // Listen for Spotify connection events
-  useEffect(() => {
-    let mounted = true
-    
-    const handleSpotifyConnected = () => {
-      if (!mounted) return
-      console.log('Spotify connected event received - reloading user data')
-      loadUserData()
-    }
-    
-    window.addEventListener('spotifyConnected', handleSpotifyConnected)
-    
-    return () => {
-      mounted = false
-      window.removeEventListener('spotifyConnected', handleSpotifyConnected)
-    }
-  }, [loadUserData])
+  // No authentication events needed for simple demo
 
   const playTrack = useCallback(async (track: Track) => {
-    console.log('🎵 Attempting to play track:', track)
-    console.log('🎵 Track service:', track.service)
-    console.log('🎵 Connected services:', state.connectedServices)
-    console.log('🎵 Playback service connected:', spotifyPlaybackService.isConnected())
-    
-    if (track.service === 'spotify' && spotifyPlaybackService.isConnected()) {
-      try {
-        console.log('🎵 Using Spotify playback service')
-        // Convert track URL to Spotify URI
-        const spotifyUri = `spotify:track:${track.id}`
-        console.log('🎵 Spotify URI:', spotifyUri)
-        const success = await spotifyPlaybackService.playTrack(spotifyUri)
-        console.log('🎵 Playback success:', success)
-        if (success) {
-          dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
-          dispatch({ type: 'SET_PLAYING', payload: true })
-          console.log('🎵 Track started playing successfully')
-        } else {
-          console.error('🎵 Failed to start playback')
-        }
-      } catch (error) {
-        console.error('🎵 Failed to play track:', error)
-        // Fallback to UI-only mode
-        dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
-        dispatch({ type: 'SET_PLAYING', payload: true })
-        console.log('🎵 Fallback to UI-only mode')
-      }
-    } else {
-      console.log('🎵 Using UI-only mode (no Spotify connection)')
-      // For other services or when playback service is not available, just update the UI state
-      dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
-      dispatch({ type: 'SET_PLAYING', payload: true })
-    }
+    console.log('🎵 Playing track:', track.title)
+    // Simple UI-only playback - no authentication required
+    dispatch({ type: 'SET_CURRENT_TRACK', payload: track })
+    dispatch({ type: 'SET_PLAYING', payload: true })
   }, [])
 
   const pauseTrack = useCallback(async () => {
-    if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
-      try {
-        await spotifyPlaybackService.pause()
-      } catch (error) {
-        console.error('Failed to pause track:', error)
-      }
-    }
+    // Simple UI-only pause
     dispatch({ type: 'SET_PLAYING', payload: false })
-  }, [state.connectedServices])
+  }, [])
 
   const nextTrack = useCallback(async () => {
-    if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
-      try {
-        await spotifyPlaybackService.nextTrack()
-      } catch (error) {
-        console.error('Failed to go to next track:', error)
-      }
-    } else if (state.queue.length > 0) {
+    // Simple UI-only next track
+    if (state.queue.length > 0) {
       const nextTrack = state.queue[0]
       const newQueue = state.queue.slice(1)
       dispatch({ type: 'SET_CURRENT_TRACK', payload: nextTrack })
       dispatch({ type: 'SET_QUEUE', payload: newQueue })
     }
-  }, [state.connectedServices, state.queue])
+  }, [state.queue])
 
   const previousTrack = useCallback(async () => {
-    if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
-      try {
-        await spotifyPlaybackService.previousTrack()
-      } catch (error) {
-        console.error('Failed to go to previous track:', error)
-      }
-    }
-  }, [state.connectedServices])
+    // Simple UI-only previous track
+    console.log('🎵 Previous track')
+  }, [])
 
   const addToQueue = useCallback((track: Track) => {
     dispatch({ type: 'ADD_TO_QUEUE', payload: track })
@@ -402,43 +410,53 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const setVolume = useCallback(async (volume: number) => {
-    if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
-      try {
-        await spotifyPlaybackService.setVolume(volume)
-      } catch (error) {
-        console.error('Failed to set volume:', error)
-      }
-    }
+    // Simple UI-only volume control
     dispatch({ type: 'SET_VOLUME', payload: volume })
-  }, [state.connectedServices])
+  }, [])
 
   const seekTo = useCallback(async (position: number) => {
-    if (state.connectedServices.includes('spotify') && spotifyPlaybackService.isConnected()) {
-      try {
-        await spotifyPlaybackService.seekTo(position)
-      } catch (error) {
-        console.error('Failed to seek:', error)
-      }
-    }
-  }, [state.connectedServices])
+    // Simple UI-only seek
+    console.log('🎵 Seeking to position:', position)
+  }, [])
 
   const searchMusic = useCallback(async (query: string) => {
     if (!query.trim()) return
     
     dispatch({ type: 'SET_LOADING', payload: true })
     try {
-      const results = await spotifyService.searchTracks(query, 20)
-      const formattedResults = results.map((track: any) => ({
-        id: track.id,
-        title: track.name,
-        artist: track.artists[0]?.name || 'Unknown Artist',
-        album: track.album?.name || 'Unknown Album',
-        duration: Math.round(track.duration_ms / 1000),
-        service: 'spotify' as const,
-        artwork: track.album?.images[0]?.url || '',
-        url: track.external_urls?.spotify || ''
-      }))
-      dispatch({ type: 'SET_SEARCH_RESULTS', payload: formattedResults })
+      // Check if Spotify is connected
+      const isConnected = await spotifyService.initialize()
+      
+      if (isConnected) {
+        // Use Spotify search
+        const spotifyTracks = await spotifyService.searchTracks(query, 20)
+        const formattedTracks: Track[] = spotifyTracks.map(track => ({
+          id: track.id,
+          title: track.name,
+          artist: track.artists[0]?.name || 'Unknown Artist',
+          album: track.album.name,
+          duration: Math.floor(track.duration_ms / 1000),
+          service: 'spotify',
+          artwork: track.album.images[0]?.url || 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
+          url: track.external_urls.spotify
+        }))
+        dispatch({ type: 'SET_SEARCH_RESULTS', payload: formattedTracks })
+      } else {
+        // Fallback to demo search results
+        const demoResults: Track[] = [
+          {
+            id: 'search1',
+            title: `Search result for "${query}"`,
+            artist: 'Demo Artist',
+            album: 'Demo Album',
+            duration: 180,
+            service: 'spotify',
+            artwork: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop',
+            url: ''
+          }
+        ]
+        dispatch({ type: 'SET_SEARCH_RESULTS', payload: demoResults })
+      }
     } catch (error) {
       console.error('Search failed:', error)
       dispatch({ type: 'SET_SEARCH_RESULTS', payload: [] })
@@ -457,17 +475,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'SET_CONNECTED_SERVICES', payload: state.connectedServices.filter(s => s !== service) })
   }, [state.connectedServices])
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      // Disconnect playback service
-      try {
-        spotifyPlaybackService.disconnect()
-      } catch (error) {
-        console.error('Error disconnecting playback service:', error)
-      }
-    }
-  }, [])
+  // No cleanup needed for simple demo
 
   const value: MusicContextType = useMemo(() => ({
     state,

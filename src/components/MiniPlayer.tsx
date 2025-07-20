@@ -3,15 +3,14 @@ import { useMusic } from '../contexts/MusicContext'
 import { useState, useCallback, useMemo } from 'react'
 
 export default function MiniPlayer() {
-  try {
-    const { state, playTrack, pauseTrack, nextTrack, previousTrack, setVolume } = useMusic()
-    const [isMuted, setIsMuted] = useState(false)
-    const [volume, setLocalVolume] = useState(70)
+  const { state, playTrack, pauseTrack, nextTrack, previousTrack, setVolume } = useMusic()
+  const [isMuted, setIsMuted] = useState(false)
+  const [volume, setLocalVolume] = useState(70)
 
-    // Add error boundary and null checks
-    if (!state || !state.currentTrack) {
-      return null
-    }
+  // Add error boundary and null checks
+  if (!state || !state.currentTrack) {
+    return null
+  }
 
   const handlePlayPause = useCallback(() => {
     if (state.currentTrack) {
@@ -140,12 +139,6 @@ export default function MiniPlayer() {
         }
         return null
       })()}
-
-
     </div>
   )
-  } catch (error) {
-    console.error('MiniPlayer error:', error)
-    return null
-  }
 } 

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { 
   Search, 
-  Plus,
   Heart,
   Music,
-  Loader
+  Loader,
+  Clock,
+  Radio,
+  Users
 } from 'lucide-react'
 import { useMusic } from '../contexts/MusicContext'
-import SpotifyOnboarding from '../components/SpotifyOnboarding'
-import { spotifyService } from '../services/spotify'
 
 const serviceIcons = {
   spotify: Music,
@@ -19,20 +19,11 @@ const serviceIcons = {
 const Dashboard = () => {
   const { state, playTrack, searchMusic } = useMusic()
   const [searchQuery, setSearchQuery] = useState('')
-  const [showOnboarding, setShowOnboarding] = useState(false)
 
-  // Check if user needs onboarding on component mount
+  // Load sample data on component mount
   useEffect(() => {
-    const checkOnboarding = async () => {
-      const isConnected = await spotifyService.initialize()
-      const hasSeenOnboarding = localStorage.getItem('spotify_onboarding_completed')
-      
-      if (!isConnected && !hasSeenOnboarding) {
-        setShowOnboarding(true)
-      }
-    }
-    
-    checkOnboarding()
+    console.log('🎵 Dashboard: Loading sample data...')
+    console.log('🎵 Current state:', state)
   }, [])
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -48,36 +39,103 @@ const Dashboard = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
-  const handleOnboardingComplete = () => {
-    setShowOnboarding(false)
-    localStorage.setItem('spotify_onboarding_completed', 'true')
-    // Refresh the page to update the connection status
-    window.location.reload()
-  }
-
-  const handleOnboardingSkip = () => {
-    setShowOnboarding(false)
-    localStorage.setItem('spotify_onboarding_completed', 'true')
-  }
+  // Simple demo data
+  const recentlyPlayedCount = 3
+  const playlistsCount = 2
 
   return (
     <>
-      <div className="h-full overflow-y-auto p-6 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Welcome to OmniFusion Music
-              {state.userProfile && (
-                <span className="text-harmony-400">, {state.userProfile.display_name}</span>
-              )}
-            </h1>
-            <p className="text-gray-400">Your universal music command center</p>
+      <div className="h-full overflow-y-auto p-6 space-y-6 bg-transparent">
+        {/* Welcome Message */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Welcome to OmniFusion Music
+          </h1>
+          <p className="text-xl text-gray-400">Your universal music command center</p>
+          <div className="mt-4 flex items-center justify-center space-x-2">
+            <span className="text-sm text-gray-400">Beta User</span>
+            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
           </div>
-          <div className="flex items-center space-x-4">
-            <button className="px-4 py-2 bg-harmony-500 hover:bg-harmony-600 text-white rounded-lg transition-colors">
-              Connect Service
-            </button>
+        </div>
+
+        {/* Simple Status */}
+        <div className="glass-effect rounded-xl p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-white">Ready to Play</h2>
+              <p className="text-gray-400">Start exploring your music</p>
+            </div>
+            <div className="flex items-center space-x-2 px-4 py-2 bg-green-500/20 rounded-lg">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-green-400 text-sm">Ready</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button className="glass-effect rounded-xl p-4 hover:bg-gray-800/50 transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                <Heart className="w-5 h-5 text-red-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium text-white">Liked Songs</p>
+                <p className="text-xs text-gray-400">127 tracks</p>
+              </div>
+            </div>
+          </button>
+          <button className="glass-effect rounded-xl p-4 hover:bg-gray-800/50 transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <Clock className="w-5 h-5 text-blue-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium text-white">Recently Played</p>
+                <p className="text-xs text-gray-400">{recentlyPlayedCount} tracks</p>
+              </div>
+            </div>
+          </button>
+          <button className="glass-effect rounded-xl p-4 hover:bg-gray-800/50 transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <Radio className="w-5 h-5 text-purple-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium text-white">Radio Stations</p>
+                <p className="text-xs text-gray-400">{playlistsCount} stations</p>
+              </div>
+            </div>
+          </button>
+          <button className="glass-effect rounded-xl p-4 hover:bg-gray-800/50 transition-all duration-300 transform hover:scale-105">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-orange-400" />
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-medium text-white">Collaborative</p>
+                <p className="text-xs text-gray-400">8 playlists</p>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {/* Music Services */}
+        <div className="glass-effect rounded-xl p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-2">Music Services</h2>
+              <p className="text-gray-400">
+                Ready to play your favorite music
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button 
+                className="px-6 py-3 bg-gradient-to-r from-harmony-500 to-purple-600 hover:from-harmony-600 hover:to-purple-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Start Playing
+              </button>
+            </div>
           </div>
         </div>
 
@@ -145,181 +203,33 @@ const Dashboard = () => {
           )}
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="glass-effect rounded-xl p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                <Music className="w-5 h-5 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-400">Total Tracks</p>
-                <p className="text-xl font-bold text-white">
-                  {state.isLoading ? '...' : state.recentlyPlayed.length}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="glass-effect rounded-xl p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                <Heart className="w-5 h-5 text-green-400" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-400">Liked Songs</p>
-                <p className="text-xl font-bold text-white">
-                  {state.isLoading ? '...' : state.recentlyPlayed.length}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="glass-effect rounded-xl p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                <Music className="w-5 h-5 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-400">Playlists</p>
-                <p className="text-xl font-bold text-white">
-                  {state.isLoading ? '...' : state.playlists.length}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="glass-effect rounded-xl p-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <Music className="w-5 h-5 text-orange-400" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-400">Services</p>
-                <p className="text-xl font-bold text-white">
-                  {state.connectedServices.length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Recent Activity & Playlists */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Tracks */}
-          <div className="glass-effect rounded-xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Recently Played</h2>
-            {state.isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader className="w-6 h-6 animate-spin text-harmony-400" />
-              </div>
-            ) : state.recentlyPlayed.length > 0 ? (
-              <div className="space-y-3">
-                {state.recentlyPlayed.slice(0, 5).map((track) => {
-                  const ServiceIcon = serviceIcons[track.service as keyof typeof serviceIcons]
-                  return (
-                    <div
-                      key={track.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800/30 transition-colors cursor-pointer"
-                      onClick={() => playTrack(track)}
-                    >
-                      <img
-                        src={track.artwork}
-                        alt={track.title}
-                        className="w-12 h-12 rounded-lg"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{track.title}</p>
-                        <p className="text-xs text-gray-400 truncate">{track.artist}</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <ServiceIcon className="w-4 h-4 text-gray-400" />
-                        <span className="text-xs text-gray-500">{formatDuration(track.duration)}</span>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <p className="text-gray-400 text-center py-8">No recently played tracks</p>
-            )}
-          </div>
-
-          {/* Featured Playlists */}
-          <div className="glass-effect rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white">Your Playlists</h2>
-              <button className="p-2 hover:bg-gray-800/50 rounded-lg transition-colors">
-                <Plus className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
-            {state.isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader className="w-6 h-6 animate-spin text-harmony-400" />
-              </div>
-            ) : state.playlists.length > 0 ? (
-              <div className="space-y-4">
-                {state.playlists.slice(0, 5).map((playlist) => {
-                  const ServiceIcon = serviceIcons[playlist.service as keyof typeof serviceIcons]
-                  return (
-                    <div
-                      key={playlist.id}
-                      className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800/30 transition-colors cursor-pointer"
-                    >
-                      <img
-                        src={playlist.artwork}
-                        alt={playlist.name}
-                        className="w-12 h-12 rounded-lg"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{playlist.name}</p>
-                        <p className="text-xs text-gray-400 truncate">{playlist.description}</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <ServiceIcon className="w-4 h-4 text-gray-400" />
-                        <span className="text-xs text-gray-500">{playlist.tracks.length} tracks</span>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            ) : (
-              <p className="text-gray-400 text-center py-8">No playlists found</p>
-            )}
-          </div>
-        </div>
-
-        {/* AI Recommendations */}
+        {/* Demo Music */}
         <div className="glass-effect rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-4">AI Recommendations</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg p-4 border border-blue-500/30">
-              <h3 className="text-lg font-semibold text-white mb-2">Based on Your Mood</h3>
-              <p className="text-sm text-gray-400 mb-3">Discover music that matches your current vibe</p>
-              <button className="px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors">
-                Explore
-              </button>
-            </div>
-            <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg p-4 border border-green-500/30">
-              <h3 className="text-lg font-semibold text-white mb-2">New Releases</h3>
-              <p className="text-sm text-gray-400 mb-3">Stay updated with the latest from your favorite artists</p>
-              <button className="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg transition-colors">
-                Discover
-              </button>
-            </div>
-            <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-lg p-4 border border-orange-500/30">
-              <h3 className="text-lg font-semibold text-white mb-2">Collaborative Mix</h3>
-              <p className="text-sm text-gray-400 mb-3">Music curated by friends and the community</p>
-              <button className="px-4 py-2 bg-orange-500/20 hover:bg-orange-500/30 text-orange-400 rounded-lg transition-colors">
-                Join
-              </button>
-            </div>
+          <h2 className="text-xl font-semibold text-white mb-4">Demo Music</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { id: '1', title: 'Bohemian Rhapsody', artist: 'Queen', artwork: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&h=300&fit=crop' },
+              { id: '2', title: 'Hotel California', artist: 'Eagles', artwork: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=300&fit=crop' },
+              { id: '3', title: 'Imagine', artist: 'John Lennon', artwork: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=300&h=300&fit=crop' }
+            ].map((track) => (
+              <div
+                key={track.id}
+                className="glass-effect rounded-lg p-4 hover:bg-gray-800/30 transition-all duration-300 cursor-pointer"
+              >
+                <div className="aspect-square bg-gradient-to-br from-harmony-500/20 to-primary-500/20 rounded-lg mb-3 flex items-center justify-center">
+                  <img
+                    src={track.artwork}
+                    alt={track.title}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div>
+                <h3 className="text-sm font-medium text-white truncate">{track.title}</h3>
+                <p className="text-xs text-gray-400 truncate">{track.artist}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      {showOnboarding && (
-        <SpotifyOnboarding
-          onComplete={handleOnboardingComplete}
-          onSkip={handleOnboardingSkip}
-        />
-      )}
     </>
   )
 }

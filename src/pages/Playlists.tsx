@@ -48,12 +48,6 @@ export default function Playlists() {
     }
   }
 
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = seconds % 60
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-  }
-
   return (
     <div className="h-full overflow-y-auto p-6 space-y-6">
       <div className="flex items-center justify-between">

@@ -256,7 +256,7 @@ export default function Player() {
         <h3 className="text-xl font-semibold text-white mb-4">Queue</h3>
         {state.queue.length > 0 ? (
           <div className="space-y-3">
-            {state.queue.map((track, index) => (
+            {state.queue.map((track) => (
               <div 
                 key={track.id} 
                 className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-800/30 transition-colors cursor-pointer"

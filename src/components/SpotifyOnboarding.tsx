@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Music, ExternalLink, CheckCircle, Copy, X } from 'lucide-react'
+import { Music, CheckCircle, X, ExternalLink } from 'lucide-react'
 import { spotifyService } from '../services/spotify'
-import { open } from '@tauri-apps/api/shell'
 
 interface SpotifyOnboardingProps {
   onComplete: () => void
@@ -10,21 +9,16 @@ interface SpotifyOnboardingProps {
 
 export default function SpotifyOnboarding({ onComplete, onSkip }: SpotifyOnboardingProps) {
   const [step, setStep] = useState<'intro' | 'connecting' | 'manual' | 'success'>('intro')
-  const [authUrl, setAuthUrl] = useState('')
-  const [manualCode, setManualCode] = useState('')
-  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [manualCode, setManualCode] = useState('')
 
   const handleStartConnection = async () => {
     setIsLoading(true)
     setError('')
     
     try {
-      const url = await spotifyService.startAuth()
-      setAuthUrl(url)
-      
-      // Open Spotify's authentication page
-      await open(url)
+      await spotifyService.startAuth()
       setStep('connecting')
       
     } catch (error) {
@@ -60,14 +54,6 @@ export default function SpotifyOnboarding({ onComplete, onSkip }: SpotifyOnboard
       setError(error instanceof Error ? error.message : 'Failed to authenticate')
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const copyAuthUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(authUrl)
-    } catch (error) {
-      console.error('Failed to copy URL:', error)
     }
   }
 
@@ -154,25 +140,6 @@ export default function SpotifyOnboarding({ onComplete, onSkip }: SpotifyOnboard
                 A browser window should have opened. If not, copy the URL below and paste it in your browser.
               </p>
             </div>
-
-            {authUrl && (
-              <div className="space-y-3">
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    value={authUrl}
-                    readOnly
-                    className="flex-1 px-3 py-2 text-sm bg-gray-800 border border-gray-600 rounded text-gray-300"
-                  />
-                  <button
-                    onClick={copyAuthUrl}
-                    className="px-3 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            )}
 
             <div className="space-y-3">
               <p className="text-sm text-gray-400">
