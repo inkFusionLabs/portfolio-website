@@ -59,6 +59,22 @@
     <link rel="dns-prefetch" href="https://api.spotify.com">
     <link rel="dns-prefetch" href="https://api.github.com">
     
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID', {
+        page_title: 'OmniFusion Music - Homepage',
+        page_location: window.location.href,
+        custom_map: {
+          'custom_parameter_1': 'download_clicks',
+          'custom_parameter_2': 'feature_interactions'
+        }
+      });
+    </script>
+    
     <!-- Manifest for PWA -->
     <link rel="manifest" href="/manifest.json">
     

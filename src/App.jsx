@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import Callback from './pages/Callback';
 import ErrorBoundary from './components/ErrorBoundary';
+import PerformanceMonitor from './components/PerformanceMonitor';
 import cacheService from './services/cacheService';
 import analyticsService from './services/analyticsService';
 import appIntegrationService from './services/appIntegrationService';
@@ -56,6 +57,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <PerformanceMonitor />
       <Router>
         <div className="App">
           <Routes>
