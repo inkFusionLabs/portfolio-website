@@ -1,7 +1,7 @@
 {
-  "name": "OmniFusion Music",
+  "name": "OmniFusion Music - Universal Music Command Center",
   "short_name": "OmniFusion",
-  "description": "Universal music streaming desktop application",
+  "description": "Universal music streaming desktop application with voice control and AI-powered features",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -9,13 +9,24 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
-  "categories": ["music", "entertainment", "productivity"],
+  "categories": ["music", "entertainment", "productivity", "utilities"],
   "icons": [
     {
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icon-192.png",
@@ -28,14 +39,32 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
     {
       "name": "Download App",
       "short_name": "Download",
-      "description": "Download OmniFusion Music app",
-      "url": "/download",
+      "description": "Download OmniFusion Music desktop app",
+      "url": "/#download",
+      "icons": [
+        {
+          "src": "/favicon.svg",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Voice Control",
+      "short_name": "Voice",
+      "description": "Try voice control features",
+      "url": "/#voice-control",
       "icons": [
         {
           "src": "/favicon.svg",
@@ -58,25 +87,31 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshot-wide.png",
+      "src": "/screenshots/desktop.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "OmniFusion Music - Universal Music Streaming"
+      "label": "OmniFusion Music - Universal Music Streaming Desktop App"
     },
     {
-      "src": "/screenshot-narrow.png",
+      "src": "/screenshots/mobile.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "OmniFusion Music Mobile View"
+      "label": "OmniFusion Music Mobile Interface"
     }
   ],
   "related_applications": [
     {
       "platform": "webapp",
-      "url": "https://omni-fusion-music-website.vercel.app"
+      "url": "https://omnifusionmusic.com"
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 } 
