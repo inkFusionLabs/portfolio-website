@@ -32,6 +32,70 @@ export const buildAuthUrl = () => {
   return `${SPOTIFY_CONFIG.AUTH_URL}?${params.toString()}`;
 };
 
+// Helper function to exchange authorization code for tokens
+export const exchangeCodeForTokens = async (code) => {
+  try {
+    const response = await fetch(SPOTIFY_CONFIG.TOKEN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa(SPOTIFY_CONFIG.CLIENT_ID + ':' + SPOTIFY_CONFIG.CLIENT_SECRET)
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: SPOTIFY_CONFIG.REDIRECT_URI
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to exchange code for tokens');
+    }
+
+    const data = await response.json();
+    return {
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+      expires_in: data.expires_in,
+      token_type: data.token_type
+    };
+  } catch (error) {
+    console.error('Error exchanging code for tokens:', error);
+    throw error;
+  }
+};
+
+// Helper function to refresh access token
+export const refreshAccessToken = async (refreshToken) => {
+  try {
+    const response = await fetch(SPOTIFY_CONFIG.TOKEN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + btoa(SPOTIFY_CONFIG.CLIENT_ID + ':' + SPOTIFY_CONFIG.CLIENT_SECRET)
+      },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to refresh access token');
+    }
+
+    const data = await response.json();
+    return {
+      access_token: data.access_token,
+      expires_in: data.expires_in,
+      token_type: data.token_type
+    };
+  } catch (error) {
+    console.error('Error refreshing access token:', error);
+    throw error;
+  }
+};
+
 // Helper function to get user profile
 export const getUserProfile = async (accessToken) => {
   try {

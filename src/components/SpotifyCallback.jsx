@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { exchangeCodeForTokens, getUserProfile } from '../config/spotify';
 
 const SpotifyCallback = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [status, setStatus] = useState('Connecting to Spotify...');
 
   useEffect(() => {
     const code = searchParams.get('code');
@@ -17,26 +19,43 @@ const SpotifyCallback = () => {
     }
 
     if (code) {
-      // Store the authorization code
-      localStorage.setItem('spotify_auth_code', code);
-      
-      // In a real app, you'd send this code to your backend to exchange for tokens
-      console.log('Authorization code received:', code);
-      
-      // For demo purposes, we'll simulate the token exchange
-      setTimeout(() => {
-        const mockToken = 'mock_access_token_' + Date.now();
-        localStorage.setItem('spotify_access_token', mockToken);
-        localStorage.removeItem('spotify_auth_code');
-        
-        // Redirect back to the main page
-        navigate('/');
-      }, 2000);
+      handleAuthorizationCode(code);
     } else {
       setError('No authorization code received');
       setTimeout(() => navigate('/'), 3000);
     }
   }, [searchParams, navigate]);
+
+  const handleAuthorizationCode = async (code) => {
+    try {
+      setStatus('Exchanging authorization code...');
+      
+      // Exchange the authorization code for tokens
+      const tokens = await exchangeCodeForTokens(code);
+      
+      // Store tokens in localStorage
+      localStorage.setItem('spotify_access_token', tokens.access_token);
+      localStorage.setItem('spotify_refresh_token', tokens.refresh_token);
+      localStorage.setItem('spotify_token_expires', Date.now() + (tokens.expires_in * 1000));
+      localStorage.setItem('spotify_token_type', tokens.token_type);
+      
+      setStatus('Fetching user profile...');
+      
+      // Get user profile
+      const userProfile = await getUserProfile(tokens.access_token);
+      localStorage.setItem('spotify_user_profile', JSON.stringify(userProfile));
+      
+      setStatus('Success! Redirecting...');
+      
+      // Redirect back to the main page
+      setTimeout(() => navigate('/'), 1000);
+      
+    } catch (error) {
+      console.error('Error during authentication:', error);
+      setError('Failed to complete authentication. Please try again.');
+      setTimeout(() => navigate('/'), 3000);
+    }
+  };
 
   if (error) {
     return (
@@ -56,7 +75,7 @@ const SpotifyCallback = () => {
       <div className="text-center">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-teal-400 mx-auto mb-4"></div>
         <h1 className="text-2xl font-bold mb-4">Connecting to Spotify...</h1>
-        <p className="opacity-80">Please wait while we complete the authentication.</p>
+        <p className="opacity-80">{status}</p>
       </div>
     </div>
   );
