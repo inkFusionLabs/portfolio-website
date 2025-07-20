@@ -11,7 +11,6 @@ import Settings from './pages/Settings'
 import MiniPlayer from './components/MiniPlayer'
 import ErrorBoundary from './components/ErrorBoundary'
 import SimpleAuth from './components/SimpleAuth'
-import SpotifyCallback from './pages/SpotifyCallback'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -80,7 +79,6 @@ function App() {
                   <Route path="/playlists" element={<Playlists />} />
                   <Route path="/discovery" element={<Discovery />} />
                   <Route path="/settings" element={<Settings />} />
-                  <Route path="/spotify-callback" element={<SpotifyCallback />} />
                 </Routes>
               </div>
             </main>
