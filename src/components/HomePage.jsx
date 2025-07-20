@@ -4,6 +4,9 @@ import Features from './Features';
 import AppShowcase from './AppShowcase';
 import FeatureComparison from './FeatureComparison';
 import ScreenshotsGallery from './ScreenshotsGallery';
+import SystemRequirements from './SystemRequirements';
+import Documentation from './Documentation';
+import InteractiveDemo from './InteractiveDemo';
 import Download from './Download';
 import FAQ from './FAQ';
 import ContactForm from './ContactForm';
@@ -19,6 +22,9 @@ const HomePage = () => {
       <AppShowcase />
       <FeatureComparison />
       <ScreenshotsGallery />
+      <InteractiveDemo />
+      <SystemRequirements />
+      <Documentation />
       <Download />
       <FAQ />
       <ContactForm />

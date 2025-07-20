@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary Meta Tags -->
-    <title>OmniFusion Music - Universal Music Command Center</title>
-    <meta name="title" content="OmniFusion Music - Universal Music Command Center">
-    <meta name="description" content="The ultimate universal music streaming desktop application. Connect to Spotify, Apple Music, YouTube Music, and more from one beautiful, seamless interface. Download for Windows, macOS, and Linux.">
-    <meta name="keywords" content="music streaming, spotify, apple music, youtube music, desktop app, universal music, music player, cross-platform, tauri, react, music hub">
+    <title>OmniFusion Music - Universal Music Command Center | Cross-Platform Desktop App</title>
+    <meta name="title" content="OmniFusion Music - Universal Music Command Center | Cross-Platform Desktop App">
+    <meta name="description" content="The ultimate universal music streaming desktop application. Connect to Spotify, Apple Music, YouTube Music, Tidal, and more from one beautiful, seamless interface. Download for Windows, macOS, and Linux. Free and open-source.">
+    <meta name="keywords" content="music streaming, spotify, apple music, youtube music, tidal, desktop app, universal music, music player, cross-platform, tauri, react, music hub, music management, playlist sync, music discovery">
     <meta name="author" content="InkFusion Labs">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+    <meta name="distribution" content="global">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://omni-fusion-music-website.vercel.app/">
@@ -21,8 +23,11 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://omni-fusion-music-website.vercel.app/">
     <meta property="og:title" content="OmniFusion Music - Universal Music Command Center">
-    <meta property="og:description" content="The ultimate universal music streaming desktop application. Connect to Spotify, Apple Music, YouTube Music, and more from one beautiful, seamless interface.">
+    <meta property="og:description" content="The ultimate universal music streaming desktop application. Connect to Spotify, Apple Music, YouTube Music, and more from one beautiful, seamless interface. Download for Windows, macOS, and Linux.">
     <meta property="og:image" content="https://omni-fusion-music-website.vercel.app/og-image.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="OmniFusion Music - Universal Music Streaming Desktop App">
     <meta property="og:site_name" content="OmniFusion Music">
     <meta property="og:locale" content="en_US">
 
@@ -33,6 +38,7 @@
     <meta property="twitter:description" content="The ultimate universal music streaming desktop application. Connect to Spotify, Apple Music, YouTube Music, and more from one beautiful, seamless interface.">
     <meta property="twitter:image" content="https://omni-fusion-music-website.vercel.app/og-image.svg">
     <meta property="twitter:creator" content="@inkfusionlabs">
+    <meta property="twitter:site" content="@inkfusionlabs">
     
     <!-- Additional SEO Meta Tags -->
     <meta name="theme-color" content="#8B5CF6">
@@ -41,9 +47,20 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OmniFusion Music">
     
-    <!-- Preconnect to external domains for performance -->
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <!-- Performance Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://api.spotify.com">
+    <link rel="dns-prefetch" href="https://api.github.com">
+    
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="/manifest.json">
     
     <!-- Structured Data for Rich Snippets -->
     <script type="application/ld+json">
@@ -51,18 +68,59 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "OmniFusion Music",
-      "description": "Universal music streaming desktop application that aggregates multiple streaming services",
+      "description": "Universal music streaming desktop application that aggregates multiple streaming services into one beautiful interface",
       "url": "https://omni-fusion-music-website.vercel.app/",
       "applicationCategory": "MusicApplication",
       "operatingSystem": "Windows, macOS, Linux",
+      "softwareVersion": "1.0.0",
+      "datePublished": "2024-01-01",
+      "dateModified": "2024-12-20",
       "offers": {
         "@type": "Offer",
         "price": "0",
-        "priceCurrency": "USD"
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
       },
       "publisher": {
         "@type": "Organization",
+        "name": "InkFusion Labs",
+        "url": "https://github.com/inkFusionLabs"
+      },
+      "creator": {
+        "@type": "Organization",
         "name": "InkFusion Labs"
+      },
+      "featureList": [
+        "Universal music streaming",
+        "Spotify integration",
+        "Apple Music integration", 
+        "YouTube Music integration",
+        "Cross-platform support",
+        "Playlist management",
+        "Music discovery",
+        "Offline support"
+      ],
+      "screenshot": "https://omni-fusion-music-website.vercel.app/og-image.svg",
+      "downloadUrl": "https://omni-fusion-music-website.vercel.app/download"
+    }
+    </script>
+    
+    <!-- Additional Structured Data for Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "InkFusion Labs",
+      "url": "https://github.com/inkFusionLabs",
+      "logo": "https://omni-fusion-music-website.vercel.app/favicon.svg",
+      "sameAs": [
+        "https://github.com/inkFusionLabs",
+        "https://twitter.com/inkfusionlabs"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "inkfusionapps@icloud.com",
+        "contactType": "customer service"
       }
     }
     </script>
