@@ -29,7 +29,7 @@ const Hero = () => {
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-3xl mx-auto leading-relaxed">
-            The ultimate universal music streaming platform that brings all your favorite services together in one beautiful, seamless experience.
+            The ultimate universal music streaming desktop application that brings all your favorite services together in one beautiful, seamless experience.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ const Hero = () => {
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
-              Download Now
+              Download App
             </span>
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur opacity-0 group-hover:opacity-75 transition-opacity duration-300"></div>
           </button>
@@ -64,7 +64,7 @@ const Hero = () => {
               </svg>
             </div>
             <h3 className="text-white font-semibold text-lg mb-2">Universal Access</h3>
-            <p className="text-white/70 text-sm">Connect to Spotify, Apple Music, YouTube Music, and more from one unified interface.</p>
+            <p className="text-white/70 text-sm">Connect to Spotify, Apple Music, YouTube Music, and more from one unified desktop interface.</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-all duration-300">
@@ -84,7 +84,7 @@ const Hero = () => {
               </svg>
             </div>
             <h3 className="text-white font-semibold text-lg mb-2">Beautiful Design</h3>
-            <p className="text-white/70 text-sm">Modern, intuitive interface with customizable themes and smooth animations.</p>
+            <p className="text-white/70 text-sm">Modern, intuitive desktop interface with customizable themes and smooth animations.</p>
           </div>
         </div>
       </div>

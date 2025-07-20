@@ -52,8 +52,8 @@ const SpotifyAuth = () => {
             </span>
           </h2>
           <p className="text-xl text-white/70 max-w-3xl mx-auto">
-            Link your Spotify account to experience seamless integration with OmniFusion Music. 
-            Access your playlists, favorites, and listening history in one unified interface.
+            Link your Spotify account to experience seamless integration with the OmniFusion Music desktop app. 
+            Access your playlists, favorites, and listening history in one unified desktop interface.
           </p>
         </div>
 
@@ -71,7 +71,7 @@ const SpotifyAuth = () => {
               </h3>
               <p className="text-white/70 mb-8 leading-relaxed">
                 Connect your Spotify account to unlock personalized features, sync your playlists, 
-                and enjoy a unified music experience across all your devices.
+                and enjoy a unified music experience in the OmniFusion Music desktop app.
               </p>
 
               <button
@@ -93,7 +93,7 @@ const SpotifyAuth = () => {
               </button>
 
               <p className="text-sm text-white/50 mt-4">
-                This will redirect you to Spotify to authorize access to your account.
+                This will redirect you to Spotify to authorize access to your account for the desktop app.
               </p>
             </div>
           ) : (
@@ -126,13 +126,13 @@ const SpotifyAuth = () => {
                   </div>
                 )}
                 <p className="text-white/70">
-                  Your Spotify account is now connected and ready to use with OmniFusion Music.
+                  Your Spotify account is now connected and ready to use with the OmniFusion Music desktop app.
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105">
-                  View My Playlists
+                  Download Desktop App
                 </button>
                 <button 
                   onClick={handleDisconnect}
@@ -154,7 +154,7 @@ const SpotifyAuth = () => {
               </svg>
             </div>
             <h4 className="text-white font-semibold mb-2">Sync Playlists</h4>
-            <p className="text-white/70 text-sm">All your Spotify playlists automatically sync to OmniFusion Music.</p>
+            <p className="text-white/70 text-sm">All your Spotify playlists automatically sync to the OmniFusion Music desktop app.</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-center">
@@ -164,7 +164,7 @@ const SpotifyAuth = () => {
               </svg>
             </div>
             <h4 className="text-white font-semibold mb-2">Smart Recommendations</h4>
-            <p className="text-white/70 text-sm">Get personalized music recommendations based on your Spotify history.</p>
+            <p className="text-white/70 text-sm">Get personalized music recommendations based on your Spotify history in the desktop app.</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-center">
@@ -173,8 +173,8 @@ const SpotifyAuth = () => {
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
               </svg>
             </div>
-            <h4 className="text-white font-semibold mb-2">Unified Control</h4>
-            <p className="text-white/70 text-sm">Control your Spotify playback directly from OmniFusion Music.</p>
+            <h4 className="text-white font-semibold mb-2">Unified Desktop Control</h4>
+            <p className="text-white/70 text-sm">Control your Spotify playback directly from the OmniFusion Music desktop application.</p>
           </div>
         </div>
       </div>

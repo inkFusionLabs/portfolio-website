@@ -9,7 +9,7 @@ const Features = () => {
         </svg>
       ),
       title: "Universal Music Hub",
-      description: "Access Spotify, Apple Music, YouTube Music, Tidal, and more from a single, unified interface. No more switching between apps.",
+      description: "Access Spotify, Apple Music, YouTube Music, Tidal, and more from a single, unified desktop application. No more switching between apps.",
       gradient: "from-purple-500 to-pink-500"
     },
     {
@@ -19,7 +19,7 @@ const Features = () => {
         </svg>
       ),
       title: "Smart Playlist Sync",
-      description: "Your playlists, favorites, and listening history automatically sync across all connected music services.",
+      description: "Your playlists, favorites, and listening history automatically sync across all connected music services in the desktop app.",
       gradient: "from-blue-500 to-purple-500"
     },
     {
@@ -28,8 +28,8 @@ const Features = () => {
           <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
         </svg>
       ),
-      title: "Beautiful Interface",
-      description: "Modern glass morphism design with customizable themes, smooth animations, and intuitive controls.",
+      title: "Beautiful Desktop Interface",
+      description: "Modern glass morphism design with customizable themes, smooth animations, and intuitive controls built for desktop use.",
       gradient: "from-green-500 to-blue-500"
     },
     {
@@ -39,7 +39,7 @@ const Features = () => {
         </svg>
       ),
       title: "AI-Powered Recommendations",
-      description: "Get personalized music recommendations based on your listening habits across all platforms.",
+      description: "Get personalized music recommendations based on your listening habits across all platforms, delivered through the desktop app.",
       gradient: "from-yellow-500 to-orange-500"
     },
     {
@@ -48,8 +48,8 @@ const Features = () => {
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
         </svg>
       ),
-      title: "Cross-Platform Sync",
-      description: "Seamlessly sync your music library across Windows, macOS, and Linux with cloud backup.",
+      title: "Cross-Platform Desktop App",
+      description: "Seamlessly sync your music library across Windows, macOS, and Linux with cloud backup and native desktop performance.",
       gradient: "from-red-500 to-pink-500"
     },
     {
@@ -58,8 +58,8 @@ const Features = () => {
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
         </svg>
       ),
-      title: "Offline Listening",
-      description: "Download your favorite tracks for offline listening with smart caching and storage management.",
+      title: "Offline Desktop Listening",
+      description: "Download your favorite tracks for offline listening with smart caching and storage management on your desktop.",
       gradient: "from-indigo-500 to-purple-500"
     }
   ];
@@ -82,7 +82,7 @@ const Features = () => {
             </span>
           </h2>
           <p className="text-xl text-white/70 max-w-3xl mx-auto">
-            Experience the future of music streaming with our innovative platform that brings all your favorite services together.
+            Experience the future of desktop music streaming with our innovative application that brings all your favorite services together.
           </p>
         </div>
 
@@ -106,14 +106,14 @@ const Features = () => {
         <div className="text-center mt-16">
           <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-3xl p-8 border border-white/10">
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
-              Ready to Unify Your Music Experience?
+              Ready to Unify Your Desktop Music Experience?
             </h3>
             <p className="text-white/70 mb-8 max-w-2xl mx-auto">
-              Join thousands of users who have already discovered the perfect way to manage all their music in one place.
+              Join thousands of users who have already discovered the perfect way to manage all their music in one desktop application.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25">
-                Get Started Free
+                Download Desktop App
               </button>
               <button className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold rounded-full text-lg border border-white/20 transition-all duration-300 hover:bg-white/20 hover:border-white/40">
                 Learn More
