@@ -1,4 +1,5 @@
 import React from 'react';
+import ComingSoon from './ComingSoon';
 
 const Download = () => {
   const platforms = [
@@ -13,7 +14,7 @@ const Download = () => {
       size: '45.2 MB',
       requirements: 'macOS 11.0+',
       gradient: 'from-gray-600 to-gray-800',
-      downloadUrl: '#'
+      progress: 90
     },
     {
       name: 'Windows',
@@ -26,7 +27,7 @@ const Download = () => {
       size: '52.8 MB',
       requirements: 'Windows 10+',
       gradient: 'from-blue-600 to-blue-800',
-      downloadUrl: '#'
+      progress: 85
     },
     {
       name: 'Linux',
@@ -39,12 +40,22 @@ const Download = () => {
       size: '48.5 MB',
       requirements: 'Ubuntu 20.04+',
       gradient: 'from-orange-600 to-red-600',
-      downloadUrl: '#'
+      progress: 75
     }
   ];
 
+  const developmentPhases = [
+    { name: 'Core Development', progress: 100, status: 'Completed', color: 'text-green-400' },
+    { name: 'UI/UX Design', progress: 100, status: 'Completed', color: 'text-green-400' },
+    { name: 'Music Service Integration', progress: 90, status: 'In Progress', color: 'text-yellow-400' },
+    { name: 'Cross-Platform Testing', progress: 80, status: 'In Progress', color: 'text-yellow-400' },
+    { name: 'Performance Optimization', progress: 85, status: 'In Progress', color: 'text-yellow-400' },
+    { name: 'Beta Testing', progress: 60, status: 'In Progress', color: 'text-yellow-400' },
+    { name: 'Final Testing & Release', progress: 0, status: 'Pending', color: 'text-gray-400' }
+  ];
+
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+    <section className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden" id="download">
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
@@ -55,17 +66,57 @@ const Download = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Download
+            Coming Soon
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
               OmniFusion Music
             </span>
           </h2>
-          <p className="text-lg text-white/70 max-w-2xl mx-auto">
-            Available for all major platforms. Download now and start your unified music journey.
+          <p className="text-lg text-white/70 max-w-2xl mx-auto mb-8">
+            We're working hard to bring you the ultimate music streaming experience. 
+            Join our beta program to get early access.
           </p>
+
+          {/* Overall Progress */}
+          <div className="max-w-md mx-auto mb-8">
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-white font-semibold">Overall Progress</span>
+                <span className="text-white/70 text-sm">Q1 2025</span>
+              </div>
+              <div className="w-full bg-white/20 rounded-full h-3 mb-3">
+                <div 
+                  className="bg-gradient-to-r from-green-400 to-blue-400 h-3 rounded-full transition-all duration-1000"
+                  style={{ width: '85%' }}
+                ></div>
+              </div>
+              <p className="text-white/60 text-sm">85% Complete - Beta Testing Phase</p>
+            </div>
+          </div>
         </div>
 
-        {/* Download Cards */}
+        {/* Development Phases */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {developmentPhases.map((phase, index) => (
+            <div key={index} className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
+              <div className="flex justify-between items-center mb-2">
+                <span className={`text-sm font-medium ${phase.color}`}>{phase.name}</span>
+                <span className={`text-xs ${phase.color}`}>{phase.progress}%</span>
+              </div>
+              <div className="w-full bg-white/20 rounded-full h-2">
+                <div 
+                  className={`h-2 rounded-full transition-all duration-1000 ${
+                    phase.status === 'Completed' ? 'bg-green-400' : 
+                    phase.status === 'In Progress' ? 'bg-yellow-400' : 'bg-gray-400'
+                  }`}
+                  style={{ width: `${phase.progress}%` }}
+                ></div>
+              </div>
+              <p className={`text-xs mt-1 ${phase.color}`}>{phase.status}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Platform Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {platforms.map((platform, index) => (
             <div 
@@ -88,77 +139,44 @@ const Download = () => {
                   <span className="text-white/60">Requirements:</span>
                   <span className="text-white">{platform.requirements}</span>
                 </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/60">Progress:</span>
+                  <span className="text-white">{platform.progress}%</span>
+                </div>
               </div>
 
-              <button className="w-full group relative px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25">
-                <span className="relative z-10 flex items-center justify-center gap-2 text-sm">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                  </svg>
-                  Download for {platform.name}
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-0 group-hover:opacity-75 transition-opacity duration-300"></div>
-              </button>
+              <ComingSoon platform={platform.name} showProgress={false} />
             </div>
           ))}
         </div>
 
-        {/* Additional Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10">
-            <h3 className="text-white font-bold text-lg mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-              Free & Open Source
-            </h3>
-            <p className="text-white/70 leading-relaxed text-sm">
-              OmniFusion Music is completely free to use and open source. No hidden fees, no subscriptions, 
-              just pure music enjoyment.
+        {/* Call to Action */}
+        <div className="text-center">
+          <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+            <h3 className="text-2xl font-bold text-white mb-4">Be the First to Experience It</h3>
+            <p className="text-white/70 mb-6 max-w-2xl mx-auto">
+              Join our beta program to get early access to OmniFusion Music. 
+              Help us shape the future of music streaming while enjoying exclusive features.
             </p>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10">
-            <h3 className="text-white font-bold text-lg mb-3 flex items-center gap-2">
-              <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-              Regular Updates
-            </h3>
-            <p className="text-white/70 leading-relaxed text-sm">
-              We regularly update OmniFusion Music with new features, bug fixes, and performance improvements 
-              to ensure the best experience.
-            </p>
-          </div>
-        </div>
-
-        {/* System Requirements */}
-        <div className="mt-12 text-center">
-          <h3 className="text-xl font-bold text-white mb-6">System Requirements</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
-              <h4 className="text-white font-semibold mb-2">Minimum</h4>
-              <ul className="text-white/70 text-xs space-y-1">
-                <li>• 4GB RAM</li>
-                <li>• 2GB Storage</li>
-                <li>• Internet Connection</li>
-              </ul>
-            </div>
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
-              <h4 className="text-white font-semibold mb-2">Recommended</h4>
-              <ul className="text-white/70 text-xs space-y-1">
-                <li>• 8GB RAM</li>
-                <li>• 5GB Storage</li>
-                <li>• High-speed Internet</li>
-              </ul>
-            </div>
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-4 border border-white/10">
-              <h4 className="text-white font-semibold mb-2">Supported</h4>
-              <ul className="text-white/70 text-xs space-y-1">
-                <li>• Spotify Premium</li>
-                <li>• Apple Music</li>
-                <li>• YouTube Music</li>
-              </ul>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={() => {
+                  const betaSection = document.getElementById('beta-testing');
+                  if (betaSection) betaSection.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25"
+              >
+                Join Beta Program
+              </button>
+              <button 
+                onClick={() => {
+                  const newsletterSection = document.getElementById('newsletter');
+                  if (newsletterSection) newsletterSection.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold rounded-full text-lg border border-white/20 transition-all duration-300 hover:bg-white/20 hover:border-white/40"
+              >
+                Get Notified
+              </button>
             </div>
           </div>
         </div>
