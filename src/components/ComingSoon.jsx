@@ -7,19 +7,19 @@ const ComingSoon = ({ platform = 'all', showProgress = true }) => {
   // Development progress data
   const developmentData = {
     overall: {
-      progress: 85,
-      estimatedCompletion: 'Q1 2025',
+      progress: 75,
+      estimatedCompletion: 'Q1 2026',
       currentPhase: 'Beta Testing',
       nextPhase: 'Public Release'
     },
     phases: [
       { name: 'Core Development', progress: 100, status: 'Completed' },
       { name: 'UI/UX Design', progress: 100, status: 'Completed' },
-      { name: 'Music Service Integration', progress: 90, status: 'In Progress' },
-      { name: 'Beta Testing', progress: 60, status: 'In Progress' },
-      { name: 'Performance Optimization', progress: 80, status: 'In Progress' },
+      { name: 'Music Service Integration', progress: 85, status: 'In Progress' },
+      { name: 'Beta Testing', progress: 40, status: 'In Progress' },
+      { name: 'Performance Optimization', progress: 70, status: 'In Progress' },
       { name: 'Final Testing', progress: 0, status: 'Pending' },
-      { name: 'Public Release', progress: 0, status: 'Pending' }
+      { name: 'Public Release', progress: 0, status: 'Q2 2026' }
     ]
   };
 

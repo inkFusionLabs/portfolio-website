@@ -63,18 +63,18 @@ const BetaTesting = () => {
     {
       phase: 'Phase 3',
       name: 'Open Beta',
-      status: 'Coming Soon',
+      status: 'Q1 2026',
       description: 'Public beta testing with wider user base',
       progress: 0,
-      color: 'text-gray-400'
+      color: 'text-purple-400'
     },
     {
       phase: 'Phase 4',
       name: 'Public Release',
-      status: 'Q1 2025',
+      status: 'Q2 2026',
       description: 'Full public release of OmniFusion Music',
       progress: 0,
-      color: 'text-purple-400'
+      color: 'text-blue-400'
     }
   ];
 
@@ -119,7 +119,7 @@ const BetaTesting = () => {
               </div>
               <p className="text-white/80 mb-6">
                 We're currently in <span className="text-yellow-400 font-semibold">Phase 2: Closed Alpha</span> testing. 
-                The public beta program will launch in <span className="text-purple-400 font-semibold">Q1 2025</span>.
+                The public beta program will launch in <span className="text-purple-400 font-semibold">Q1 2026</span>.
               </p>
               
               <div className="flex justify-center">
