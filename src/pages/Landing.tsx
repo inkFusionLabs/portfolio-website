@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Clock, Mail, Play, ArrowRight, Zap, Music, Smartphone, Globe } from 'lucide-react';
+import { Clock, Mail, Play, ArrowRight, Zap, Music, Smartphone, Globe } from 'lucide-react';
 
 const Landing: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState({
@@ -45,8 +45,6 @@ const Landing: React.FC = () => {
               <span className="text-xl font-bold text-white">OmniFusion</span>
             </div>
             <div className="hidden md:flex space-x-8">
-              <Link to="/roadmap" className="text-gray-300 hover:text-white transition-colors">Roadmap</Link>
-              <Link to="/demo" className="text-gray-300 hover:text-white transition-colors">Demo</Link>
               <Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">Privacy</Link>
               <Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Terms</Link>
             </div>
@@ -112,10 +110,10 @@ const Landing: React.FC = () => {
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </button>
             
-            <Link to="/demo" className="px-8 py-4 border-2 border-gray-600 text-gray-300 font-semibold rounded-xl hover:border-indigo-500 hover:text-indigo-400 transition-all duration-200 flex items-center">
+            <button className="px-8 py-4 border-2 border-gray-600 text-gray-300 font-semibold rounded-xl hover:border-indigo-500 hover:text-indigo-400 transition-all duration-200 flex items-center">
               <Play className="w-5 h-5 mr-2" />
               Watch Demo
-            </Link>
+            </button>
           </div>
 
           {/* Features Preview */}
@@ -158,7 +156,6 @@ const Landing: React.FC = () => {
             <div className="flex space-x-6 text-sm text-gray-400">
               <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
               <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link to="/roadmap" className="hover:text-white transition-colors">Roadmap</Link>
             </div>
           </div>
         </div>
