@@ -1,141 +1,228 @@
 import React from 'react';
-import { Shield, Lock, Eye, Database } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Shield, Lock, Eye, Database, Users, Music } from 'lucide-react';
 
 const Privacy: React.FC = () => {
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center p-3 bg-indigo-500/10 rounded-full mb-6">
-            <Shield className="w-8 h-8 text-indigo-400" />
-          </div>
-          <h1 className="text-4xl font-bold mb-4">Privacy Policy</h1>
-          <p className="text-xl text-gray-400">Last updated: January 15, 2024</p>
-        </div>
-
-        {/* Content */}
-        <div className="prose prose-invert max-w-none">
-          <div className="bg-slate-800/50 rounded-xl p-8 mb-8">
-            <h2 className="text-2xl font-semibold mb-4 flex items-center">
-              <Lock className="w-6 h-6 mr-2 text-indigo-400" />
-              Your Privacy Matters
-            </h2>
-            <p className="text-gray-300 leading-relaxed">
-              At OmniFusion Music, we believe your privacy is fundamental. This policy explains how we collect, 
-              use, and protect your information when you use our desktop application.
-            </p>
-          </div>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Information We Collect</h2>
-            <div className="bg-slate-800/50 rounded-xl p-6">
-              <h3 className="text-xl font-medium mb-3">Local Data Only</h3>
-              <p className="text-gray-300 mb-4">
-                OmniFusion Music operates entirely on your local device. We do not collect, store, or transmit 
-                any personal information to our servers.
-              </p>
-              <ul className="space-y-2 text-gray-300">
-                <li>• Music preferences and settings (stored locally)</li>
-                <li>• Playlist information (from your connected services)</li>
-                <li>• Application usage data (stored locally only)</li>
-              </ul>
-            </div>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Third-Party Services</h2>
-            <div className="bg-slate-800/50 rounded-xl p-6">
-              <h3 className="text-xl font-medium mb-3">Music Service Integration</h3>
-              <p className="text-gray-300 mb-4">
-                When you connect to music services like Spotify or Apple Music, you're connecting directly 
-                to their APIs. We do not intercept or store your credentials.
-              </p>
-              <ul className="space-y-2 text-gray-300">
-                <li>• Spotify: Uses OAuth 2.0 for secure authentication</li>
-                <li>• Apple Music: Uses your system's authentication</li>
-                <li>• YouTube Music: Uses your browser's authentication</li>
-              </ul>
-            </div>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Data Security</h2>
-            <div className="bg-slate-800/50 rounded-xl p-6">
-              <div className="flex items-start mb-4">
-                <Eye className="w-6 h-6 mr-3 text-green-400 mt-1" />
-                <div>
-                  <h3 className="text-xl font-medium mb-2">Local Storage</h3>
-                  <p className="text-gray-300">
-                    All your data is stored locally on your device using secure, encrypted storage methods.
-                  </p>
-                </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 bg-black/20 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className="flex items-center space-x-2 text-white hover:text-gray-300 transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Home</span>
+            </Link>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <Music className="w-5 h-5 text-white" />
               </div>
-              <div className="flex items-start">
-                <Database className="w-6 h-6 mr-3 text-blue-400 mt-1" />
-                <div>
-                  <h3 className="text-xl font-medium mb-2">No Cloud Storage</h3>
-                  <p className="text-gray-300">
-                    We don't use cloud storage or external databases. Your music data never leaves your device.
-                  </p>
-                </div>
-              </div>
+              <span className="text-xl font-bold text-white">OmniFusion</span>
             </div>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Analytics and Tracking</h2>
-            <div className="bg-slate-800/50 rounded-xl p-6">
-              <h3 className="text-xl font-medium mb-3">No Tracking</h3>
-              <p className="text-gray-300 mb-4">
-                OmniFusion Music does not include any analytics, tracking, or telemetry features. 
-                We respect your privacy and don't monitor your usage.
-              </p>
-              <ul className="space-y-2 text-gray-300">
-                <li>• No usage analytics</li>
-                <li>• No crash reporting</li>
-                <li>• No user behavior tracking</li>
-                <li>• No advertising or marketing data collection</li>
-              </ul>
-            </div>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Updates and Changes</h2>
-            <div className="bg-slate-800/50 rounded-xl p-6">
-              <p className="text-gray-300 mb-4">
-                We may update this privacy policy from time to time. Any changes will be reflected in the 
-                "Last updated" date at the top of this page.
-              </p>
-              <p className="text-gray-300">
-                For significant changes, we will notify users through the application or our website.
-              </p>
-            </div>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
-            <div className="bg-slate-800/50 rounded-xl p-6">
-              <p className="text-gray-300 mb-4">
-                If you have any questions about this privacy policy or our privacy practices, please contact us:
-              </p>
-              <ul className="space-y-2 text-gray-300">
-                <li>• Email: privacy@omnifusionmusic.com</li>
-                <li>• GitHub: github.com/omnifusionmusic</li>
-                <li>• Website: omnifusionmusic.com</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Footer */}
-          <div className="text-center mt-12 pt-8 border-t border-slate-700">
-            <p className="text-gray-400">
-              This privacy policy is effective as of January 15, 2024 and will remain in effect except with 
-              respect to any changes in its provisions in the future.
-            </p>
           </div>
         </div>
-      </div>
+      </nav>
+
+      {/* Header */}
+      <section className="pt-24 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="w-20 h-20 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Shield className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            Privacy
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+              Policy
+            </span>
+          </h1>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Your privacy is our priority. Learn how we protect your data and ensure your music experience remains secure.
+          </p>
+        </div>
+      </section>
+
+      {/* Content */}
+      <section className="pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-12">
+            {/* Data Collection */}
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Database className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Data Collection</h2>
+              </div>
+              <div className="space-y-4 text-gray-300">
+                <p>OmniFusion Music collects minimal data necessary to provide you with the best music streaming experience:</p>
+                <ul className="space-y-2 ml-6">
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Account information from your connected music services (Spotify, Apple Music, etc.)</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Your music preferences and listening history to provide personalized recommendations</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Application usage data to improve performance and user experience</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Device information for cross-platform synchronization</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Data Security */}
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Lock className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Data Security</h2>
+              </div>
+              <div className="space-y-4 text-gray-300">
+                <p>We implement industry-standard security measures to protect your data:</p>
+                <ul className="space-y-2 ml-6">
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>End-to-end encryption for all data transmission</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Secure authentication with OAuth 2.0 for music service connections</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Local data storage with optional cloud synchronization</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Regular security audits and updates</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Data Usage */}
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Eye className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">How We Use Your Data</h2>
+              </div>
+              <div className="space-y-4 text-gray-300">
+                <p>Your data is used exclusively to enhance your music experience:</p>
+                <ul className="space-y-2 ml-6">
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Providing personalized music recommendations</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Synchronizing your playlists across devices</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Improving application performance and features</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Providing customer support and troubleshooting</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Data Sharing */}
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Data Sharing</h2>
+              </div>
+              <div className="space-y-4 text-gray-300">
+                <p>We do not sell, trade, or rent your personal information to third parties. Data is only shared when:</p>
+                <ul className="space-y-2 ml-6">
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Required by law or legal process</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Necessary to provide music streaming services (with your connected music platforms)</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>You explicitly consent to sharing for specific features</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Your Rights */}
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10">
+              <h2 className="text-2xl font-bold text-white mb-6">Your Rights</h2>
+              <div className="space-y-4 text-gray-300">
+                <p>You have complete control over your data:</p>
+                <ul className="space-y-2 ml-6">
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Access and download your personal data at any time</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Request deletion of your account and associated data</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Opt out of data collection for non-essential features</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="text-indigo-400 mt-1">•</span>
+                    <span>Contact us with any privacy concerns or questions</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div className="bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-2xl p-8 border border-indigo-500/30 text-center">
+              <h2 className="text-2xl font-bold text-white mb-4">Questions About Privacy?</h2>
+              <p className="text-gray-300 mb-6">
+                We're committed to transparency and protecting your privacy. Contact us with any questions.
+              </p>
+              <button className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                Contact Us
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-black/20 backdrop-blur-md border-t border-white/10 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 mb-4 md:mb-0">
+              <div className="w-6 h-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded flex items-center justify-center">
+                <Music className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-white font-semibold">OmniFusion Music</span>
+            </div>
+            <div className="flex space-x-6 text-sm text-gray-400">
+              <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link to="/roadmap" className="hover:text-white transition-colors">Roadmap</Link>
+              <Link to="/demo" className="hover:text-white transition-colors">Demo</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

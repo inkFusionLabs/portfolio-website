@@ -35,7 +35,7 @@ class SpotifyService {
     this.clientId = '0830208961c64908baf8bc1effbc4342'
     this.clientSecret = 'c70789797dde459face1f0b6a3f12bef'
     // Use your website callback since that's what's configured in Spotify
-    this.redirectUri = 'https://www.omnifusionmusic.com/spotify-callback'
+    this.redirectUri = 'http://www.omnifusionmusic.com/spotify-callback'
   }
 
   async initialize(): Promise<boolean> {
