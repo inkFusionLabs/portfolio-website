@@ -5,6 +5,7 @@ import Callback from './pages/Callback';
 import ErrorBoundary from './components/ErrorBoundary';
 import cacheService from './services/cacheService';
 import analyticsService from './services/analyticsService';
+import appIntegrationService from './services/appIntegrationService';
 import './index.css';
 
 function App() {
@@ -15,9 +16,13 @@ function App() {
         // Initialize cache service
         await cacheService.init();
         
+        // Initialize app integration service
+        await appIntegrationService.init();
+        
         // Track app initialization
         analyticsService.trackAppEvent('initialization', {
-          services_initialized: ['cache', 'analytics']
+          services_initialized: ['cache', 'analytics', 'app_integration'],
+          app_installed: appIntegrationService.getAppStatus().installed
         });
         
         console.log('Services initialized successfully');

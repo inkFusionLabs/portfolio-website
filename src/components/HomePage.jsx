@@ -12,6 +12,7 @@ import FAQ from './FAQ';
 import ContactForm from './ContactForm';
 import Newsletter from './Newsletter';
 import ThemeToggle from './ThemeToggle';
+import AppConnectionStatus from './AppConnectionStatus';
 
 const HomePage = () => {
   return (
@@ -29,6 +30,7 @@ const HomePage = () => {
       <FAQ />
       <ContactForm />
       <Newsletter />
+      <AppConnectionStatus />
     </div>
   );
 };

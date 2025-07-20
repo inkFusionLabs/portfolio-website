@@ -1,327 +1,318 @@
-import React, { useEffect, useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
+import oauthService from '../services/oauthService';
+import appIntegrationService from '../services/appIntegrationService';
+import analyticsService from '../services/analyticsService';
 
 const Callback = () => {
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
-  const [status, setStatus] = useState('loading')
-  const [message, setMessage] = useState('Processing your request...')
-  const [error, setError] = useState(null)
-  const [countdown, setCountdown] = useState(5)
+  const [status, setStatus] = useState('processing');
+  const [message, setMessage] = useState('Processing your request...');
+  const [countdown, setCountdown] = useState(5);
+  const [error, setError] = useState(null);
+  const [appStatus, setAppStatus] = useState(null);
+  
+  const params = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get callback parameters
-        const code = searchParams.get('code')
-        const state = searchParams.get('state')
-        const error = searchParams.get('error')
-        const callbackType = searchParams.get('type') || 'oauth'
+        const callbackType = params.type || 'generic';
+        const code = searchParams.get('code');
+        const state = searchParams.get('state');
+        const error = searchParams.get('error');
 
-        // Handle different callback types
+        // Check for app integration
+        const appStatus = appIntegrationService.getAppStatus();
+        setAppStatus(appStatus);
+
+        if (error) {
+          throw new Error(`OAuth error: ${error}`);
+        }
+
         switch (callbackType) {
           case 'spotify':
-            await handleSpotifyCallback(code, state, error)
-            break
+            await handleSpotifyCallback(code, state);
+            break;
           case 'github':
-            await handleGitHubCallback(code, state, error)
-            break
+            await handleGitHubCallback(code, state);
+            break;
+          case 'apple':
+            await handleAppleCallback(code, state);
+            break;
           case 'download':
-            await handleDownloadCallback(code, error)
-            break
+            await handleDownloadCallback();
+            break;
           case 'newsletter':
-            await handleNewsletterCallback(code, error)
-            break
+            await handleNewsletterCallback();
+            break;
           default:
-            await handleGenericCallback(code, state, error)
+            await handleGenericCallback(code, state);
         }
+
+        setStatus('success');
+        setMessage('Success! Redirecting you...');
+        
+        // Track successful callback
+        analyticsService.trackEvent('callback_success', {
+          type: callbackType,
+          app_installed: appStatus.installed
+        });
+
       } catch (err) {
-        console.error('Callback error:', err)
-        setStatus('error')
-        setError(err.message)
-        setMessage('Something went wrong. Please try again.')
+        console.error('Callback error:', err);
+        setError(err.message);
+        setStatus('error');
+        setMessage('An error occurred. Please try again.');
+        
+        // Track callback error
+        analyticsService.trackError(err, {
+          context: 'callback_processing',
+          type: params.type || 'generic'
+        });
       }
+    };
+
+    handleCallback();
+  }, [params.type, searchParams]);
+
+  // Handle Spotify OAuth callback
+  const handleSpotifyCallback = async (code, state) => {
+    const result = await oauthService.handleCallback(code, state);
+    
+    // If app is installed, send tokens to app
+    if (appStatus.installed) {
+      appIntegrationService.handleAppCallback({
+        provider: 'spotify',
+        tokens: result.tokens,
+        user: result.user
+      });
     }
+    
+    setMessage(`Successfully connected to Spotify! Welcome, ${result.user.display_name || result.user.id}!`);
+  };
 
-    handleCallback()
-  }, [searchParams, navigate])
+  // Handle GitHub OAuth callback
+  const handleGitHubCallback = async (code, state) => {
+    const result = await oauthService.handleCallback(code, state);
+    
+    if (appStatus.installed) {
+      appIntegrationService.handleAppCallback({
+        provider: 'github',
+        tokens: result.tokens,
+        user: result.user
+      });
+    }
+    
+    setMessage(`Successfully connected to GitHub! Welcome, ${result.user.login || result.user.id}!`);
+  };
 
-  // Countdown timer for auto-redirect
+  // Handle Apple Music OAuth callback
+  const handleAppleCallback = async (code, state) => {
+    const result = await oauthService.handleCallback(code, state);
+    
+    if (appStatus.installed) {
+      appIntegrationService.handleAppCallback({
+        provider: 'apple',
+        tokens: result.tokens,
+        user: result.user
+      });
+    }
+    
+    setMessage(`Successfully connected to Apple Music! Welcome, ${result.user.name || result.user.id}!`);
+  };
+
+  // Handle download callback
+  const handleDownloadCallback = async () => {
+    const platform = searchParams.get('platform') || 'unknown';
+    const version = searchParams.get('version') || 'latest';
+    
+    // Track download
+    analyticsService.trackDownload(platform, version);
+    
+    setMessage(`Download started for ${platform}! Check your downloads folder.`);
+  };
+
+  // Handle newsletter callback
+  const handleNewsletterCallback = async () => {
+    const email = searchParams.get('email');
+    const subscribed = searchParams.get('subscribed') === 'true';
+    
+    if (subscribed) {
+      setMessage(`Thank you for subscribing to our newsletter! We'll keep you updated.`);
+    } else {
+      setMessage(`You've been unsubscribed from our newsletter.`);
+    }
+  };
+
+  // Handle generic callback
+  const handleGenericCallback = async (code, state) => {
+    if (code && state) {
+      // Try to determine provider from state or other parameters
+      const provider = searchParams.get('provider') || 'unknown';
+      
+      try {
+        const result = await oauthService.handleCallback(code, state);
+        
+        if (appStatus.installed) {
+          appIntegrationService.handleAppCallback({
+            provider: result.provider,
+            tokens: result.tokens,
+            user: result.user
+          });
+        }
+        
+        setMessage(`Successfully connected to ${result.provider}!`);
+      } catch (err) {
+        setMessage('Authentication completed successfully!');
+      }
+    } else {
+      setMessage('Request processed successfully!');
+    }
+  };
+
+  // Countdown and redirect
   useEffect(() => {
     if (status === 'success' || status === 'error') {
       const timer = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
-            clearInterval(timer)
-            navigate('/')
-            return 0
+            clearInterval(timer);
+            
+            // Redirect based on app status
+            if (appStatus?.installed) {
+              // Open the app
+              appIntegrationService.openApp('callback_complete', {
+                status: status,
+                type: params.type || 'generic'
+              });
+            } else {
+              // Redirect to homepage
+              navigate('/');
+            }
           }
-          return prev - 1
-        })
-      }, 1000)
+          return prev - 1;
+        });
+      }, 1000);
 
-      return () => clearInterval(timer)
+      return () => clearInterval(timer);
     }
-  }, [status, navigate])
-
-  const handleSpotifyCallback = async (code, state, error) => {
-    if (error) {
-      throw new Error(`Spotify authorization failed: ${error}`)
-    }
-
-    if (!code) {
-      throw new Error('No authorization code received from Spotify')
-    }
-
-    // Simulate API call to exchange code for tokens
-    setMessage('Connecting to Spotify...')
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    // Here you would typically:
-    // 1. Send the code to your backend
-    // 2. Exchange it for access/refresh tokens
-    // 3. Store tokens securely
-    // 4. Redirect to the app
-
-    setStatus('success')
-    setMessage('Successfully connected to Spotify!')
-  }
-
-  const handleGitHubCallback = async (code, state, error) => {
-    if (error) {
-      throw new Error(`GitHub authorization failed: ${error}`)
-    }
-
-    if (!code) {
-      throw new Error('No authorization code received from GitHub')
-    }
-
-    setMessage('Connecting to GitHub...')
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    // Here you would typically:
-    // 1. Exchange code for access token
-    // 2. Fetch user information
-    // 3. Create or update user account
-    // 4. Set up authentication session
-
-    setStatus('success')
-    setMessage('Successfully connected to GitHub!')
-  }
-
-  const handleDownloadCallback = async (code, error) => {
-    if (error) {
-      throw new Error(`Download failed: ${error}`)
-    }
-
-    setMessage('Preparing your download...')
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // Here you would typically:
-    // 1. Verify download request
-    // 2. Generate download link
-    // 3. Track download analytics
-    // 4. Redirect to download
-
-    setStatus('success')
-    setMessage('Download ready! Starting download...')
-  }
-
-  const handleNewsletterCallback = async (code, error) => {
-    if (error) {
-      throw new Error(`Newsletter subscription failed: ${error}`)
-    }
-
-    setMessage('Confirming your subscription...')
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // Here you would typically:
-    // 1. Verify subscription token
-    // 2. Activate subscription
-    // 3. Send welcome email
-    // 4. Update user preferences
-
-    setStatus('success')
-    setMessage('Newsletter subscription confirmed!')
-  }
-
-  const handleGenericCallback = async (code, state, error) => {
-    if (error) {
-      throw new Error(`Authentication failed: ${error}`)
-    }
-
-    setMessage('Processing authentication...')
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    setStatus('success')
-    setMessage('Authentication successful!')
-  }
+  }, [status, appStatus, navigate, params.type]);
 
   const getStatusIcon = () => {
     switch (status) {
-      case 'loading':
+      case 'processing':
         return (
-          <div className="w-16 h-16 text-blue-400 animate-spin">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10c0-5.5-4.5-10-10-10zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/>
-              <path d="M12 4a8 8 0 0 0-8 8c0 4.4 3.6 8 8 8s8-3.6 8-8c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
-            </svg>
-          </div>
-        )
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+        );
       case 'success':
         return (
-          <div className="w-16 h-16 text-green-400">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-        )
+        );
       case 'error':
         return (
-          <div className="w-16 h-16 text-red-400">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/>
+          <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
-        )
+        );
       default:
-        return (
-          <div className="w-16 h-16 text-blue-400 animate-spin">
-            <svg fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10c0-5.5-4.5-10-10-10zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z"/>
-              <path d="M12 4a8 8 0 0 0-8 8c0 4.4 3.6 8 8 8s8-3.6 8-8c0-4.4-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
-            </svg>
-          </div>
-        )
+        return null;
     }
-  }
-
-  const getStatusColor = () => {
-    switch (status) {
-      case 'loading':
-        return 'from-blue-500 to-cyan-500'
-      case 'success':
-        return 'from-green-500 to-emerald-500'
-      case 'error':
-        return 'from-red-500 to-pink-500'
-      default:
-        return 'from-blue-500 to-cyan-500'
-    }
-  }
-
-  const getBackgroundColor = () => {
-    switch (status) {
-      case 'loading':
-        return 'bg-blue-500/10'
-      case 'success':
-        return 'bg-green-500/10'
-      case 'error':
-        return 'bg-red-500/10'
-      default:
-        return 'bg-blue-500/10'
-    }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
-      {/* Background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="relative z-10 max-w-md w-full">
-        {/* Main Callback Card */}
-        <div className={`glass p-8 rounded-3xl text-center ${getBackgroundColor()}`}>
-          {/* Status Icon */}
-          <div className="flex justify-center mb-6">
-            {getStatusIcon()}
-          </div>
-
-          {/* Status Title */}
-          <h1 className="text-3xl font-bold text-white mb-4">
-            {status === 'loading' && 'Processing...'}
-            {status === 'success' && 'Success!'}
-            {status === 'error' && 'Error'}
-          </h1>
-
-          {/* Status Message */}
-          <p className="text-xl text-gray-200 mb-6">
-            {message}
-          </p>
-
-          {/* Error Details */}
-          {error && (
-            <div className="bg-red-500/20 border border-red-500/30 rounded-xl p-4 mb-6">
-              <p className="text-red-300 text-sm">{error}</p>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <button
-              onClick={() => navigate('/')}
-              className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25"
-            >
-              Go to Homepage
-            </button>
-            
-            {status === 'success' && (
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full px-6 py-3 bg-white/10 backdrop-blur-md text-white font-semibold rounded-xl border border-white/20 transition-all duration-300 hover:bg-white/20 hover:border-white/40"
-              >
-                Try Another Action
-              </button>
-            )}
-            
-            {status === 'error' && (
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full px-6 py-3 bg-white/10 backdrop-blur-md text-white font-semibold rounded-xl border border-white/20 transition-all duration-300 hover:bg-white/20 hover:border-white/40"
-              >
-                Try Again
-              </button>
-            )}
-          </div>
-
-          {/* Countdown */}
-          {(status === 'success' || status === 'error') && (
-            <p className="text-gray-400 text-sm mt-4">
-              Redirecting in {countdown} seconds...
-            </p>
-          )}
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black flex items-center justify-center p-6">
+      <div className="max-w-md w-full bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 text-center">
+        {/* Status Icon */}
+        <div className="flex justify-center mb-6">
+          {getStatusIcon()}
         </div>
 
-        {/* Help Section */}
-        <div className="mt-6">
-          <div className="glass p-6 rounded-2xl">
-            <h3 className="text-lg font-semibold text-white mb-3">Need Help?</h3>
-            <div className="space-y-2">
-              <button
-                onClick={() => navigate('/#faq')}
-                className="w-full text-left text-gray-300 hover:text-white transition-colors text-sm"
-              >
-                📖 Check our FAQ
-              </button>
-              <button
-                onClick={() => navigate('/#community')}
-                className="w-full text-left text-gray-300 hover:text-white transition-colors text-sm"
-              >
-                💬 Join our community
-              </button>
-              <a
-                href="mailto:inkfusionapps@icloud.com"
-                className="block text-gray-300 hover:text-white transition-colors text-sm"
-              >
-                📧 Contact support
-              </a>
+        {/* Status Message */}
+        <h2 className="text-2xl font-bold text-white mb-4">
+          {status === 'processing' && 'Processing...'}
+          {status === 'success' && 'Success!'}
+          {status === 'error' && 'Error'}
+        </h2>
+
+        <p className="text-white/70 mb-6">
+          {message}
+        </p>
+
+        {/* App Status */}
+        {appStatus && (
+          <div className="mb-6 p-4 bg-white/5 rounded-lg">
+            <div className="flex items-center justify-center space-x-2 mb-2">
+              <div className={`w-3 h-3 rounded-full ${appStatus.installed ? 'bg-green-500' : 'bg-gray-500'}`}></div>
+              <span className="text-white/60 text-sm">
+                {appStatus.installed ? 'OmniFusion Music app detected' : 'OmniFusion Music app not detected'}
+              </span>
+            </div>
+            {appStatus.installed && appStatus.version && (
+              <p className="text-white/40 text-xs">App version: {appStatus.version}</p>
+            )}
+          </div>
+        )}
+
+        {/* Error Details */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
+
+        {/* Countdown */}
+        {status !== 'processing' && (
+          <div className="mb-6">
+            <p className="text-white/60 text-sm">
+              Redirecting in {countdown} seconds...
+            </p>
+            <div className="w-full bg-white/10 rounded-full h-2 mt-2">
+              <div 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-1000"
+                style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+              ></div>
             </div>
           </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          {status === 'error' && (
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Try Again
+            </button>
+          )}
+          
+          <button
+            onClick={() => navigate('/')}
+            className="px-6 py-3 bg-white/10 backdrop-blur-md text-white font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-colors"
+          >
+            Go Home
+          </button>
+
+          {appStatus?.installed && (
+            <button
+              onClick={() => appIntegrationService.openApp('open')}
+              className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:scale-105 transition-all duration-300"
+            >
+              Open App
+            </button>
+          )}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Callback 
+export default Callback; 
