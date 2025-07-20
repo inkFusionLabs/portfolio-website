@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Play, Pause, SkipBack, SkipForward, Volume2, Search, Heart, Share2, Download, Music, Smartphone, Globe, Brain } from 'lucide-react';
+import { ArrowLeft, Play, Pause, SkipBack, SkipForward, Volume2, Search, Heart, Music, Smartphone, Globe, Brain } from 'lucide-react';
 
 const Demo: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
