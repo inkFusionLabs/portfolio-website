@@ -13,6 +13,15 @@ const Hero = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+        {/* Logo */}
+        <div className="mb-8 flex justify-center">
+          <img 
+            src="/logo.svg" 
+            alt="OmniFusion Music" 
+            className="h-24 md:h-32 w-auto"
+          />
+        </div>
+        
         {/* Main Headline */}
         <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
           Universal Music
