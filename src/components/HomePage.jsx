@@ -2,16 +2,24 @@ import React from 'react';
 import Hero from './Hero';
 import Features from './Features';
 import AppShowcase from './AppShowcase';
+import FeatureComparison from './FeatureComparison';
 import Download from './Download';
+import FAQ from './FAQ';
+import ContactForm from './ContactForm';
 import Newsletter from './Newsletter';
+import ThemeToggle from './ThemeToggle';
 
 const HomePage = () => {
   return (
     <div className="min-h-screen">
+      <ThemeToggle />
       <Hero />
       <Features />
       <AppShowcase />
+      <FeatureComparison />
       <Download />
+      <FAQ />
+      <ContactForm />
       <Newsletter />
     </div>
   );
