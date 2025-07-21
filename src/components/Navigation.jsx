@@ -3,14 +3,19 @@ import React, { useState, useEffect } from 'react';
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showOwnerButton, setShowOwnerButton] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Only show the button if localStorage flag is set
+    setShowOwnerButton(localStorage.getItem('omnifusion_is_owner') === 'true');
   }, []);
 
   const scrollToSection = (sectionId) => {
@@ -58,6 +63,17 @@ const Navigation = () => {
                 {item.name}
               </button>
             ))}
+            {/* Owner-only Open App button */}
+            {showOwnerButton && (
+              <a
+                href="omnifusionmusic://"
+                className="ml-4 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow hover:scale-105 transition-all duration-300"
+                style={{ textDecoration: 'none' }}
+                title="Open OmniFusion Music App"
+              >
+                🚀 Open App
+              </a>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -88,6 +104,17 @@ const Navigation = () => {
                   {item.name}
                 </button>
               ))}
+              {/* Owner-only Open App button for mobile */}
+              {showOwnerButton && (
+                <a
+                  href="omnifusionmusic://"
+                  className="block w-full text-left mt-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow hover:scale-105 transition-all duration-300"
+                  style={{ textDecoration: 'none' }}
+                  title="Open OmniFusion Music App"
+                >
+                  🚀 Open App
+                </a>
+              )}
             </div>
           </div>
         )}
