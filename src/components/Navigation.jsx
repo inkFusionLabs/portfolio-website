@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showOwnerButton, setShowOwnerButton] = useState(false);
+  // Removed showOwnerButton state and effect
 
   useEffect(() => {
     const handleScroll = () => {
@@ -11,11 +11,6 @@ const Navigation = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    // Only show the button if localStorage flag is set
-    setShowOwnerButton(localStorage.getItem('omnifusion_is_owner') === 'true');
   }, []);
 
   const scrollToSection = (sectionId) => {
