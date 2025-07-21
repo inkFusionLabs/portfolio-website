@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ComingSoon from './ComingSoon';
 
 const Hero = () => {
+  const [showOwnerButton, setShowOwnerButton] = useState(false);
+
+  useEffect(() => {
+    setShowOwnerButton(localStorage.getItem('omnifusion_is_owner') === 'true');
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Elements */}
@@ -14,12 +20,23 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         {/* Logo */}
-        <div className="mb-8 flex justify-center">
+        <div className="mb-8 flex flex-col items-center justify-center">
           <img 
             src="/logo.svg" 
             alt="OmniFusion Music" 
             className="h-24 md:h-32 w-auto"
           />
+          {/* Owner-only Open App button */}
+          {showOwnerButton && (
+            <a
+              href="omnifusionmusic://"
+              className="mt-4 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow hover:scale-105 transition-all duration-300"
+              style={{ textDecoration: 'none' }}
+              title="Open OmniFusion Music App"
+            >
+              🚀 Open App
+            </a>
+          )}
         </div>
         
         {/* Main Headline */}

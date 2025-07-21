@@ -63,17 +63,7 @@ const Navigation = () => {
                 {item.name}
               </button>
             ))}
-            {/* Owner-only Open App button */}
-            {showOwnerButton && (
-              <a
-                href="omnifusionmusic://"
-                className="ml-4 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow hover:scale-105 transition-all duration-300"
-                style={{ textDecoration: 'none' }}
-                title="Open OmniFusion Music App"
-              >
-                🚀 Open App
-              </a>
-            )}
+            {/* Owner-only Open App button removed */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -104,17 +94,7 @@ const Navigation = () => {
                   {item.name}
                 </button>
               ))}
-              {/* Owner-only Open App button for mobile */}
-              {showOwnerButton && (
-                <a
-                  href="omnifusionmusic://"
-                  className="block w-full text-left mt-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow hover:scale-105 transition-all duration-300"
-                  style={{ textDecoration: 'none' }}
-                  title="Open OmniFusion Music App"
-                >
-                  🚀 Open App
-                </a>
-              )}
+              {/* Owner-only Open App button for mobile removed */}
             </div>
           </div>
         )}
