@@ -4,7 +4,7 @@ const Footer = () => {
   const socialLinks = [
     {
       name: 'GitHub',
-      url: 'https://github.com/REPLACE_WITH_YOUR_USERNAME/OmniFusionMusic'
+      url: 'https://github.com/inkFusionLabs/OmniFusionMusic'
     },
     {
       name: 'Discord',

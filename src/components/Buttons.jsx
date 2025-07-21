@@ -4,7 +4,7 @@ const Buttons = () => {
   return (
     <div className="flex gap-4 justify-center flex-wrap mb-12">
       <a 
-        href="https://github.com/REPLACE_WITH_YOUR_USERNAME/OmniFusionMusic" 
+        href="https://github.com/inkFusionLabs/OmniFusionMusic/releases" 
         className="btn btn-primary"
         target="_blank"
         rel="noopener noreferrer"
@@ -12,7 +12,7 @@ const Buttons = () => {
         📥 Download
       </a>
       <a 
-        href="https://github.com/REPLACE_WITH_YOUR_USERNAME/OmniFusionMusic" 
+        href="https://github.com/inkFusionLabs/OmniFusionMusic" 
         className="btn btn-secondary"
         target="_blank"
         rel="noopener noreferrer"

@@ -314,11 +314,11 @@ const Accomplishments = () => {
           <div className="glass p-8 rounded-3xl max-w-4xl mx-auto">
             <h3 className="text-3xl font-bold text-white mb-4">Ready to Experience OmniFusion Music?</h3>
             <p className="text-gray-300 mb-8 text-lg">
-              Download the app and join thousands of users who are already enjoying unified music streaming
+              Join our beta program to get early access to the ultimate universal music streaming experience
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="btn-primary">
-                Download for macOS
+                Join Beta Program
               </button>
               <button className="btn-secondary">
                 View on GitHub
