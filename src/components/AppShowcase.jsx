@@ -104,11 +104,22 @@ const AppShowcase = () => {
             {/* Screenshot/Preview */}
             <div className="relative">
               <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-2xl p-4 border border-white/10">
-                <div className="bg-gray-800 rounded-xl h-64 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">🎵</div>
-                    <p className="text-white/60">App Screenshot Preview</p>
-                    <p className="text-white/40 text-sm mt-2">Coming Soon</p>
+                <div className="bg-gray-800 rounded-xl overflow-hidden">
+                  <img 
+                    src={showcaseItems[activeFeature]?.image || '/screenshots/main-interface.png'} 
+                    alt={`OmniFusion Music ${showcaseItems[activeFeature]?.title || 'Main Interface'}`} 
+                    className="w-full h-auto object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="h-64 flex items-center justify-center" style={{display: 'none'}}>
+                    <div className="text-center">
+                      <div className="text-6xl mb-4">🎵</div>
+                      <p className="text-white/60">App Screenshot Preview</p>
+                      <p className="text-white/40 text-sm mt-2">Upload your screenshot to {showcaseItems[activeFeature]?.image || '/screenshots/main-interface.png'}</p>
+                    </div>
                   </div>
                 </div>
               </div>
