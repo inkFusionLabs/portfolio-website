@@ -109,90 +109,104 @@ const PlaylistManagementScreenshot = () => (
 // Multi-Service Integration Screenshot Component
 const MultiServiceScreenshot = () => (
   <div className="w-full h-full bg-gradient-to-br from-gray-900 to-black p-4">
-    {/* App Header */}
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-          </svg>
-        </div>
-        <span className="text-white font-semibold text-sm">Services</span>
-      </div>
-    </div>
-
-    {/* Service Cards */}
-    <div className="space-y-3">
-      <div className="bg-gradient-to-r from-green-600/20 to-green-500/20 rounded-lg p-3 border border-green-500/30">
-        <div className="flex items-center justify-between">
+    <div className="w-full h-full rounded-lg overflow-hidden">
+      <img 
+        src="/screenshots/settings-services.png" 
+        alt="OmniFusion Music Settings - Services Integration" 
+        className="w-full h-full object-cover"
+        onError={(e) => {
+          e.target.style.display = 'none';
+          e.target.nextSibling.style.display = 'flex';
+        }}
+      />
+      {/* Fallback placeholder if image fails to load */}
+      <div className="w-full h-full bg-gradient-to-br from-gray-900 to-black p-4 hidden">
+        {/* App Header */}
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
             </div>
-            <div>
-              <div className="text-white font-semibold text-sm">Spotify</div>
-              <div className="text-green-400 text-xs">Connected • Premium</div>
+            <span className="text-white font-semibold text-sm">Services</span>
+          </div>
+        </div>
+
+        {/* Service Cards */}
+        <div className="space-y-3">
+          <div className="bg-gradient-to-r from-green-600/20 to-green-500/20 rounded-lg p-3 border border-green-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">S</span>
+                </div>
+                <div>
+                  <div className="text-white font-semibold text-sm">Spotify</div>
+                  <div className="text-green-400 text-xs">Connected • Premium</div>
+                </div>
+              </div>
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
             </div>
           </div>
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-        </div>
-      </div>
 
-      <div className="bg-gradient-to-r from-red-600/20 to-red-500/20 rounded-lg p-3 border border-red-500/30">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
-            </div>
-            <div>
-              <div className="text-white font-semibold text-sm">Apple Music</div>
-              <div className="text-red-400 text-xs">Connected • Individual</div>
+          <div className="bg-gradient-to-r from-red-600/20 to-red-500/20 rounded-lg p-3 border border-red-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">A</span>
+                </div>
+                <div>
+                  <div className="text-white font-semibold text-sm">Apple Music</div>
+                  <div className="text-red-400 text-xs">Connected • Individual</div>
+                </div>
+              </div>
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
             </div>
           </div>
-          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-        </div>
-      </div>
 
-      <div className="bg-gradient-to-r from-blue-600/20 to-blue-500/20 rounded-lg p-3 border border-blue-500/30">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">Y</span>
-            </div>
-            <div>
-              <div className="text-white font-semibold text-sm">YouTube Music</div>
-              <div className="text-blue-400 text-xs">Connected • Premium</div>
+          <div className="bg-gradient-to-r from-blue-600/20 to-blue-500/20 rounded-lg p-3 border border-blue-500/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">Y</span>
+                </div>
+                <div>
+                  <div className="text-white font-semibold text-sm">YouTube Music</div>
+                  <div className="text-blue-400 text-xs">Connected • Premium</div>
+                </div>
+              </div>
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
             </div>
           </div>
-          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-        </div>
-      </div>
 
-      <div className="bg-white/5 rounded-lg p-3 border border-white/10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-              <span className="text-white/40 font-bold text-sm">T</span>
-            </div>
-            <div>
-              <div className="text-white/40 font-semibold text-sm">Tidal</div>
-              <div className="text-white/30 text-xs">Not connected</div>
+          <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                  <span className="text-white/40 font-bold text-sm">T</span>
+                </div>
+                <div>
+                  <div className="text-white/40 font-semibold text-sm">Tidal</div>
+                  <div className="text-white/30 text-xs">Not connected</div>
+                </div>
+              </div>
+              <div className="w-3 h-3 bg-white/20 rounded-full"></div>
             </div>
           </div>
-          <div className="w-3 h-3 bg-white/20 rounded-full"></div>
         </div>
-      </div>
-    </div>
 
-    {/* Stats */}
-    <div className="mt-4 grid grid-cols-2 gap-2">
-      <div className="bg-white/5 rounded-lg p-2 text-center">
-        <div className="text-white font-bold text-sm">3</div>
-        <div className="text-white/60 text-xs">Connected</div>
-      </div>
-      <div className="bg-white/5 rounded-lg p-2 text-center">
-        <div className="text-white font-bold text-sm">1,247</div>
-        <div className="text-white/60 text-xs">Total Songs</div>
+        {/* Stats */}
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="bg-white/5 rounded-lg p-2 text-center">
+            <div className="text-white font-bold text-sm">3</div>
+            <div className="text-white/60 text-xs">Connected</div>
+          </div>
+          <div className="bg-white/5 rounded-lg p-2 text-center">
+            <div className="text-white font-bold text-sm">1,247</div>
+            <div className="text-white/60 text-xs">Total Songs</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
