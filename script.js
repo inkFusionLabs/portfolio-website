@@ -27,6 +27,49 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Gallery Category Filtering
+function initGalleryFilter() {
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const category = btn.getAttribute('data-category');
+            
+            // Update active button
+            categoryBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Filter gallery items
+            galleryItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                if (category === 'all' || itemCategory === category) {
+                    item.style.display = 'block';
+                    item.style.animation = 'fadeIn 0.5s ease-in';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+// Add fadeIn animation for gallery items
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+document.head.appendChild(style);
+
 // Calendar Functionality
 class BookingCalendar {
     constructor() {
@@ -218,6 +261,7 @@ function showBookingConfirmation(bookingData) {
                         <li><strong>Date:</strong> ${bookingData.eventDate}</li>
                         <li><strong>Venue:</strong> ${bookingData.venue}</li>
                         <li><strong>Duration:</strong> ${bookingData.duration} hours</li>
+                        <li><strong>Package:</strong> ${bookingData.package}</li>
                     </ul>
                 </div>
             </div>
@@ -228,8 +272,8 @@ function showBookingConfirmation(bookingData) {
     `;
     
     // Add modal styles
-    const style = document.createElement('style');
-    style.textContent = `
+    const modalStyle = document.createElement('style');
+    modalStyle.textContent = `
         .booking-modal {
             position: fixed;
             top: 0;
@@ -340,13 +384,13 @@ function showBookingConfirmation(bookingData) {
         }
     `;
     
-    document.head.appendChild(style);
+    document.head.appendChild(modalStyle);
     document.body.appendChild(modal);
     
     // Close modal functionality
     const closeModal = () => {
         document.body.removeChild(modal);
-        document.head.removeChild(style);
+        document.head.removeChild(modalStyle);
     };
     
     modal.querySelector('.modal-close').addEventListener('click', closeModal);
@@ -368,6 +412,9 @@ window.addEventListener('scroll', () => {
 
 // Add some interactive effects
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize gallery filtering
+    initGalleryFilter();
+    
     // Add parallax effect to disco lights
     window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
@@ -388,6 +435,30 @@ document.addEventListener('DOMContentLoaded', () => {
         
         button.addEventListener('mouseleave', () => {
             button.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Add service card animations
+    const serviceCards = document.querySelectorAll('.service-card');
+    serviceCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-10px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Add pricing card interactions
+    const pricingCards = document.querySelectorAll('.pricing-card');
+    pricingCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Scroll to booking section when pricing card is clicked
+            document.getElementById('booking').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         });
     });
 });

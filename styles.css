@@ -269,6 +269,24 @@ body {
     color: #000000;
 }
 
+.btn-outline {
+    background: transparent;
+    color: #00ff00;
+    border: 2px solid #00ff00;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.btn-outline:hover {
+    background: #00ff00;
+    color: #000000;
+    transform: translateY(-2px);
+}
+
 .hero-visual {
     flex: 1;
     display: flex;
@@ -333,6 +351,95 @@ section {
     color: #00ff00;
     margin-bottom: 3rem;
     text-shadow: 0 0 10px #00ff00;
+}
+
+/* Services Section */
+.services {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.service-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.service-card:hover::before {
+    left: 100%;
+}
+
+.service-card:hover {
+    border-color: #00ff00;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    transform: translateY(-5px);
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #00ff00, #00cc00);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: #000000;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.service-card h3 {
+    color: #00ff00;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.service-card p {
+    color: #cccccc;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.service-features {
+    list-style: none;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.service-features li {
+    color: #ffffff;
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.service-features li::before {
+    content: '▶';
+    color: #00ff00;
+    position: absolute;
+    left: 0;
 }
 
 /* About Section */
@@ -407,6 +514,160 @@ section {
         transform: scale(1.1);
         opacity: 0.8;
     }
+}
+
+/* Gallery Section */
+.gallery {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.gallery-categories {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background: #00ff00;
+    color: #000000;
+    border-color: #00ff00;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.gallery-item {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.gallery-item:hover {
+    border-color: #00ff00;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    transform: translateY(-5px);
+}
+
+.gallery-placeholder {
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.gallery-placeholder i {
+    font-size: 3rem;
+    color: #00ff00;
+    margin-bottom: 1rem;
+}
+
+.gallery-placeholder h4 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.gallery-placeholder p {
+    color: #cccccc;
+    font-size: 0.9rem;
+}
+
+/* Pricing Section */
+.pricing {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.pricing-card.featured {
+    border-color: #00ff00;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.pricing-card:hover {
+    border-color: #00ff00;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+    transform: translateY(-5px);
+}
+
+.pricing-header h3 {
+    color: #00ff00;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.pricing-header p {
+    color: #cccccc;
+    margin-bottom: 2rem;
+}
+
+.pricing-features {
+    list-style: none;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.pricing-features li {
+    color: #ffffff;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pricing-features i.fa-check {
+    color: #00ff00;
+}
+
+.pricing-features i.fa-times {
+    color: #ff0000;
 }
 
 /* Booking Section */
@@ -747,6 +1008,22 @@ section {
     }
 
     .hero-buttons {
+        justify-content: center;
+    }
+
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-categories {
         justify-content: center;
     }
 }
