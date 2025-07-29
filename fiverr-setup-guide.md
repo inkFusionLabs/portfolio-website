@@ -7,7 +7,7 @@
 
 ### ✅ **Profile Description:**
 ```
-Professional Full Stack Developer & iOS Specialist with 3+ years of experience creating impactful digital solutions.
+Passionate Full Stack Developer & iOS Specialist with 2 months of focused experience creating impactful digital solutions.
 
 🏆 What I Deliver:
 • Custom React web applications with Node.js backend
@@ -18,16 +18,14 @@ Professional Full Stack Developer & iOS Specialist with 3+ years of experience c
 🎯 Recent Projects:
 • TinySteps NICU Dads - iOS app helping fathers in NICU (App Store)
 • Omnifusion Music - Digital music platform with modern web technologies
-• Professional websites with responsive design and SEO optimization
 
 💼 Available for:
 • React/Node.js web applications
 • iOS mobile app development
 • Website redesigns and maintenance
 • E-commerce solutions
-• Technical consulting
 
-🔧 Tech Stack: React, Node.js, JavaScript, Swift, HTML5, CSS3, Git, Responsive Design
+🔧 Tech Stack: React, Node.js, JavaScript, Swift, HTML5, CSS3, Git
 
 Let's bring your vision to life with professional, high-quality development services!
 
