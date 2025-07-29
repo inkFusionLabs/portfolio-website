@@ -68,7 +68,7 @@ if (skillsSection) {
     observer.observe(skillsSection);
 }
 
-// Contact form handling
+// Contact form handling with LinkedIn tracking
 const contactForm = document.querySelector('.contact-form');
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
@@ -83,14 +83,14 @@ if (contactForm) {
         
         // Simple validation
         if (!name || !email || !message) {
-            alert('Please fill in all required fields.');
+            showNotification('Please fill in all required fields.', 'error');
             return;
         }
         
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert('Please enter a valid email address.');
+            showNotification('Please enter a valid email address.', 'error');
             return;
         }
         
@@ -100,14 +100,78 @@ if (contactForm) {
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
         
+        // Track LinkedIn conversion
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'form_submit', {
+                'event_category': 'contact',
+                'event_label': 'portfolio_contact'
+            });
+        }
+        
         // Simulate API call
         setTimeout(() => {
-            alert('Thank you for your message! I\'ll get back to you soon.');
+            showNotification('Thank you for your message! I\'ll get back to you soon.', 'success');
             this.reset();
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
         }, 2000);
     });
+}
+
+// Notification system
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span>${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        max-width: 400px;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Close button
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    });
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, 5000);
 }
 
 // Add loading animation to portfolio items
@@ -189,6 +253,47 @@ window.addEventListener('scroll', animateOnScroll);
 // Initialize animations on page load
 window.addEventListener('load', animateOnScroll);
 
+// LinkedIn tracking
+function trackLinkedInClick() {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'click', {
+            'event_category': 'social',
+            'event_label': 'linkedin_profile'
+        });
+    }
+}
+
+// Add LinkedIn tracking to all LinkedIn links
+document.querySelectorAll('a[href*="linkedin"]').forEach(link => {
+    link.addEventListener('click', trackLinkedInClick);
+});
+
+// Professional scroll progress indicator
+function createScrollProgress() {
+    const progressBar = document.createElement('div');
+    progressBar.className = 'scroll-progress';
+    progressBar.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: linear-gradient(90deg, #4F46E5, #7C3AED);
+        z-index: 10001;
+        transition: width 0.1s ease;
+    `;
+    
+    document.body.appendChild(progressBar);
+    
+    window.addEventListener('scroll', () => {
+        const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+        progressBar.style.width = scrolled + '%';
+    });
+}
+
+// Initialize scroll progress
+createScrollProgress();
+
 // Add CSS for animations
 const style = document.createElement('style');
 style.textContent = `
@@ -215,6 +320,27 @@ style.textContent = `
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
+    .notification-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+    
+    .notification-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+    
+    .notification-close:hover {
+        opacity: 0.8;
+    }
+    
     @media (max-width: 768px) {
         .nav-menu {
             display: none;
@@ -223,6 +349,30 @@ style.textContent = `
         .nav-menu.active {
             display: flex;
         }
+        
+        .notification {
+            right: 10px;
+            left: 10px;
+            max-width: none;
+        }
     }
 `;
-document.head.appendChild(style); 
+document.head.appendChild(style);
+
+// Professional page load animation
+window.addEventListener('load', () => {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.5s ease';
+    
+    setTimeout(() => {
+        document.body.style.opacity = '1';
+    }, 100);
+});
+
+// Track portfolio views for LinkedIn analytics
+if (typeof gtag !== 'undefined') {
+    gtag('event', 'page_view', {
+        'page_title': 'John Inkfusion Portfolio',
+        'page_location': window.location.href
+    });
+} 
